@@ -98,17 +98,6 @@ class ClientHandler : public CefClient,
                                         CefRefPtr<CefProcessMessage> message)
                                         OVERRIDE;
 
-  // CefContextMenuHandler methods
-  virtual void OnBeforeContextMenu(CefRefPtr<CefBrowser> browser,
-                                   CefRefPtr<CefFrame> frame,
-                                   CefRefPtr<CefContextMenuParams> params,
-                                   CefRefPtr<CefMenuModel> model) OVERRIDE;
-  virtual bool OnContextMenuCommand(CefRefPtr<CefBrowser> browser,
-                                    CefRefPtr<CefFrame> frame,
-                                    CefRefPtr<CefContextMenuParams> params,
-                                    int command_id,
-                                    EventFlags event_flags) OVERRIDE;
-
   // CefDisplayHandler methods
   virtual void OnLoadingStateChange(CefRefPtr<CefBrowser> browser,
                                     bool isLoading,
@@ -220,15 +209,6 @@ class ClientHandler : public CefClient,
 
   // Create all of RequestDelegateSet objects.
   static void CreateRequestDelegates(RequestDelegateSet& delegates);
-
-  // Test context menu creation.
-  void BuildTestMenu(CefRefPtr<CefMenuModel> model);
-  bool ExecuteTestMenu(int command_id);
-  struct TestMenuState {
-    TestMenuState() : check_item(true), radio_item(0) {}
-    bool check_item;
-    int radio_item;
-  } m_TestMenuState;
 
   // Returns the full download path for the specified file, or an empty path to
   // use the default temp directory.

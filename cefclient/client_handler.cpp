@@ -22,16 +22,6 @@
 #include "cefclient/string_util.h"
 
 
-// Custom menu command Ids.
-enum client_menu_ids {
-  CLIENT_ID_SHOW_DEVTOOLS   = MENU_ID_USER_FIRST,
-  CLIENT_ID_TESTMENU_SUBMENU,
-  CLIENT_ID_TESTMENU_CHECKITEM,
-  CLIENT_ID_TESTMENU_RADIOITEM1,
-  CLIENT_ID_TESTMENU_RADIOITEM2,
-  CLIENT_ID_TESTMENU_RADIOITEM3,
-};
-
 ClientHandler::ClientHandler()
   : m_MainHwnd(NULL),
     m_BrowserId(0),
@@ -84,47 +74,6 @@ bool ClientHandler::OnProcessMessageReceived(
   }
 
   return handled;
-}
-
-void ClientHandler::OnBeforeContextMenu(
-    CefRefPtr<CefBrowser> browser,
-    CefRefPtr<CefFrame> frame,
-    CefRefPtr<CefContextMenuParams> params,
-    CefRefPtr<CefMenuModel> model) {
-  if ((params->GetTypeFlags() & (CM_TYPEFLAG_PAGE | CM_TYPEFLAG_FRAME)) != 0) {
-    // Add a separator if the menu already has items.
-    if (model->GetCount() > 0)
-      model->AddSeparator();
-
-    // Add a "Show DevTools" item to all context menus.
-    model->AddItem(CLIENT_ID_SHOW_DEVTOOLS, "&Show DevTools");
-
-    CefString devtools_url = browser->GetHost()->GetDevToolsURL(true);
-    if (devtools_url.empty() ||
-        m_OpenDevToolsURLs.find(devtools_url) != m_OpenDevToolsURLs.end()) {
-      // Disable the menu option if DevTools isn't enabled or if a window is
-      // already open for the current URL.
-      model->SetEnabled(CLIENT_ID_SHOW_DEVTOOLS, false);
-    }
-
-    // Test context menu features.
-    BuildTestMenu(model);
-  }
-}
-
-bool ClientHandler::OnContextMenuCommand(
-    CefRefPtr<CefBrowser> browser,
-    CefRefPtr<CefFrame> frame,
-    CefRefPtr<CefContextMenuParams> params,
-    int command_id,
-    EventFlags event_flags) {
-  switch (command_id) {
-    case CLIENT_ID_SHOW_DEVTOOLS:
-      ShowDevTools(browser);
-      return true;
-    default:  // Allow default handling, if any.
-      return ExecuteTestMenu(command_id);
-  }
 }
 
 void ClientHandler::OnLoadingStateChange(CefRefPtr<CefBrowser> browser,
@@ -221,8 +170,6 @@ bool ClientHandler::OnPreKeyEvent(CefRefPtr<CefBrowser> browser,
     // OnKeyEvent() method the space key would cause the window to scroll in
     // addition to showing the alert box.
     if (event.type == KEYEVENT_RAWKEYDOWN) {
-      browser->GetMainFrame()->ExecuteJavaScript(
-          "alert('You pressed the space bar!');", "", 0);
     }
     return true;
   }
@@ -321,7 +268,7 @@ void ClientHandler::OnLoadError(CefRefPtr<CefBrowser> browser,
 
   // Display a load error message.
   std::stringstream ss;
-  ss << "<html><body><h2>Failed to load URL " << std::string(failedUrl) <<
+  ss << "<html><body><h2>Failed " << std::string(failedUrl) <<
         " with error " << std::string(errorText) << " (" << errorCode <<
         ").</h2></body></html>";
   frame->LoadString(ss.str(), failedUrl);
@@ -343,43 +290,6 @@ CefRefPtr<CefResourceHandler> ClientHandler::GetResourceHandler(
       CefRefPtr<CefBrowser> browser,
       CefRefPtr<CefFrame> frame,
       CefRefPtr<CefRequest> request) {
-  std::string url = request->GetURL();
-  if (url == "http://tests/request") {
-    // Show the request contents
-    std::string dump;
-    DumpRequestContents(request, dump);
-    CefRefPtr<CefStreamReader> stream =
-        CefStreamReader::CreateForData(
-            static_cast<void*>(const_cast<char*>(dump.c_str())),
-            dump.size());
-    ASSERT(stream.get());
-    return new CefStreamResourceHandler("text/plain", stream);
-  } else if (url == "http://tests/dialogs") {
-    // Show the dialogs contents
-    CefRefPtr<CefStreamReader> stream =
-        GetBinaryResourceReader("dialogs.html");
-    ASSERT(stream.get());
-    return new CefStreamResourceHandler("text/html", stream);
-  } else if (url == dom_test::kTestUrl) {
-    // Show the domaccess contents
-    CefRefPtr<CefStreamReader> stream =
-       GetBinaryResourceReader("domaccess.html");
-    ASSERT(stream.get());
-    return new CefStreamResourceHandler("text/html", stream);
-  } else if (url == "http://tests/localstorage") {
-    // Show the localstorage contents
-    CefRefPtr<CefStreamReader> stream =
-        GetBinaryResourceReader("localstorage.html");
-    ASSERT(stream.get());
-    return new CefStreamResourceHandler("text/html", stream);
-  } else if (url == "http://tests/xmlhttprequest") {
-    // Show the xmlhttprequest contents
-    CefRefPtr<CefStreamReader> stream =
-       GetBinaryResourceReader("xmlhttprequest.html");
-    ASSERT(stream.get());
-    return new CefStreamResourceHandler("text/html", stream);
-  }
-
   CefRefPtr<CefResourceHandler> handler;
 
   // Execute delegate callbacks.
@@ -436,44 +346,6 @@ std::string ClientHandler::GetLastDownloadFile() {
   return m_LastDownloadFile;
 }
 
-void ClientHandler::ShowDevTools(CefRefPtr<CefBrowser> browser) {
-  std::string devtools_url = browser->GetHost()->GetDevToolsURL(true);
-  if (!devtools_url.empty()) {
-    if (m_bExternalDevTools) {
-      // Open DevTools in an external browser window.
-      LaunchExternalBrowser(devtools_url);
-    } else if (m_OpenDevToolsURLs.find(devtools_url) ==
-               m_OpenDevToolsURLs.end()) {
-      // Open DevTools in a popup window.
-      m_OpenDevToolsURLs.insert(devtools_url);
-      browser->GetMainFrame()->ExecuteJavaScript(
-          "window.open('" +  devtools_url + "');", "about:blank", 0);
-    }
-  }
-}
-
-// static
-void ClientHandler::LaunchExternalBrowser(const std::string& url) {
-  if (CefCurrentlyOn(TID_PROCESS_LAUNCHER)) {
-    // Retrieve the current executable path.
-    CefString file_exe;
-    if (!CefGetPath(PK_FILE_EXE, file_exe))
-      return;
-
-    // Create the command line.
-    CefRefPtr<CefCommandLine> command_line =
-        CefCommandLine::CreateCommandLine();
-    command_line->SetProgram(file_exe);
-    command_line->AppendSwitchWithValue(cefclient::kUrl, url);
-
-    // Launch the process.
-    CefLaunchProcess(command_line);
-  } else {
-    // Execute on the PROCESS_LAUNCHER thread.
-    CefPostTask(TID_PROCESS_LAUNCHER,
-        NewCefRunnableFunction(&ClientHandler::LaunchExternalBrowser, url));
-  }
-}
 
 // static
 void ClientHandler::CreateProcessMessageDelegates(
@@ -486,41 +358,4 @@ void ClientHandler::CreateProcessMessageDelegates(
 void ClientHandler::CreateRequestDelegates(RequestDelegateSet& delegates) {
   // Create the binding test delegates.
   binding_test::CreateRequestDelegates(delegates);
-}
-
-void ClientHandler::BuildTestMenu(CefRefPtr<CefMenuModel> model) {
-  if (model->GetCount() > 0)
-    model->AddSeparator();
-
-  // Build the sub menu.
-  CefRefPtr<CefMenuModel> submenu =
-      model->AddSubMenu(CLIENT_ID_TESTMENU_SUBMENU, "Context Menu Test");
-  submenu->AddCheckItem(CLIENT_ID_TESTMENU_CHECKITEM, "Check Item");
-  submenu->AddRadioItem(CLIENT_ID_TESTMENU_RADIOITEM1, "Radio Item 1", 0);
-  submenu->AddRadioItem(CLIENT_ID_TESTMENU_RADIOITEM2, "Radio Item 2", 0);
-  submenu->AddRadioItem(CLIENT_ID_TESTMENU_RADIOITEM3, "Radio Item 3", 0);
-
-  // Check the check item.
-  if (m_TestMenuState.check_item)
-    submenu->SetChecked(CLIENT_ID_TESTMENU_CHECKITEM, true);
-
-  // Check the selected radio item.
-  submenu->SetChecked(
-      CLIENT_ID_TESTMENU_RADIOITEM1 + m_TestMenuState.radio_item, true);
-}
-
-bool ClientHandler::ExecuteTestMenu(int command_id) {
-  if (command_id == CLIENT_ID_TESTMENU_CHECKITEM) {
-    // Toggle the check item.
-    m_TestMenuState.check_item ^= 1;
-    return true;
-  } else if (command_id >= CLIENT_ID_TESTMENU_RADIOITEM1 &&
-             command_id <= CLIENT_ID_TESTMENU_RADIOITEM3) {
-    // Store the selected radio item.
-    m_TestMenuState.radio_item = (command_id - CLIENT_ID_TESTMENU_RADIOITEM1);
-    return true;
-  }
-
-  // Allow default handling to proceed.
-  return false;
 }
