@@ -1,0 +1,483 @@
+<HTML>
+<HEAD>
+<TITLE>
+cef_values.h
+</TITLE>
+</HEAD>
+<BODY>
+<PRE>
+<font color="green">// Copyright (c) 2012 Marshall A. Greenblatt. All rights reserved.</font>
+<font color="green">//</font>
+<font color="green">// Redistribution and use in source and binary forms, with or without</font>
+<font color="green">// modification, are permitted provided that the following conditions are</font>
+<font color="green">// met:</font>
+<font color="green">//</font>
+<font color="green">//    * Redistributions of source code must retain the above copyright</font>
+<font color="green">// notice, this list of conditions and the following disclaimer.</font>
+<font color="green">//    * Redistributions in binary form must reproduce the above</font>
+<font color="green">// copyright notice, this list of conditions and the following disclaimer</font>
+<font color="green">// in the documentation and/or other materials provided with the</font>
+<font color="green">// distribution.</font>
+<font color="green">//    * Neither the name of Google Inc. nor the name Chromium Embedded</font>
+<font color="green">// Framework nor the names of its contributors may be used to endorse</font>
+<font color="green">// or promote products derived from this software without specific prior</font>
+<font color="green">// written permission.</font>
+<font color="green">//</font>
+<font color="green">// THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS</font>
+<font color="green">// "AS IS" AND ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT</font>
+<font color="green">// LIMITED TO, THE IMPLIED WARRANTIES OF MERCHANTABILITY AND FITNESS FOR</font>
+<font color="green">// A PARTICULAR PURPOSE ARE DISCLAIMED. IN NO EVENT SHALL THE COPYRIGHT</font>
+<font color="green">// OWNER OR CONTRIBUTORS BE LIABLE FOR ANY DIRECT, INDIRECT, INCIDENTAL,</font>
+<font color="green">// SPECIAL, EXEMPLARY, OR CONSEQUENTIAL DAMAGES (INCLUDING, BUT NOT</font>
+<font color="green">// LIMITED TO, PROCUREMENT OF SUBSTITUTE GOODS OR SERVICES; LOSS OF USE,</font>
+<font color="green">// DATA, OR PROFITS; OR BUSINESS INTERRUPTION) HOWEVER CAUSED AND ON ANY</font>
+<font color="green">// THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT</font>
+<font color="green">// (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE</font>
+<font color="green">// OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.</font>
+<font color="green">//</font>
+<font color="green">// ---------------------------------------------------------------------------</font>
+<font color="green">//</font>
+<font color="green">// The contents of this file must follow a specific format in order to</font>
+<font color="green">// support the CEF translator tool. See the translator.README.txt file in the</font>
+<font color="green">// tools directory for more information.</font>
+<font color="green">//</font>
+
+<font color="blue">#ifndef</font> CEF_INCLUDE_CEF_VALUES_H_
+<font color="blue">#define</font> CEF_INCLUDE_CEF_VALUES_H_
+<font color="blue">#pragma</font> once
+
+<font color="blue">#include</font> <font color="maroon">&#60;vector&#62;</font>
+<font color="blue">#include</font> <font color="maroon">"include/cef_base.h"</font>
+
+<font color="blue">class</font> CefDictionaryValue;
+<font color="blue">class</font> CefListValue;
+
+<font color="blue">typedef</font> cef_value_type_t CefValueType;
+
+<font color="green">///</font>
+<font color="green">// Class representing a binary value. Can be used on any process and thread.</font>
+<font color="green">///</font>
+<font color="green">/*--cef(source=library)--*/</font>
+<font color="blue">class</font> CefBinaryValue <font color="black">:</font> <font color="blue">public</font> virtual CefBase <font color="black">{</font>
+ <font color="blue">public</font><font color="black">:</font>
+  <font color="green">///</font>
+  <font color="green">// Creates a new object that is not owned by any other object. The specified</font>
+  <font color="green">// |data| will be copied.</font>
+  <font color="green">///</font>
+  <font color="green">/*--cef()--*/</font>
+  <font color="blue">static</font> CefRefPtr<font color="black">&#60;</font>CefBinaryValue<font color="black">&#62;</font> Create<font color="black">(</font><font color="blue">const</font> <font color="blue">void</font><font color="black">*</font> data,
+                                          size_t data_size<font color="black">)</font>;
+
+  <font color="green">///</font>
+  <font color="green">// Returns true if this object is valid. Do not call any other methods if this</font>
+  <font color="green">// method returns false.</font>
+  <font color="green">///</font>
+  <font color="green">/*--cef()--*/</font>
+  virtual <font color="blue">bool</font> IsValid<font color="black">(</font><font color="black">)</font> <font color="black">=</font><font color="maroon">0</font>;
+
+  <font color="green">///</font>
+  <font color="green">// Returns true if this object is currently owned by another object.</font>
+  <font color="green">///</font>
+  <font color="green">/*--cef()--*/</font>
+  virtual <font color="blue">bool</font> IsOwned<font color="black">(</font><font color="black">)</font> <font color="black">=</font><font color="maroon">0</font>;
+
+  <font color="green">///</font>
+  <font color="green">// Returns a copy of this object. The data in this object will also be copied.</font>
+  <font color="green">///</font>
+  <font color="green">/*--cef()--*/</font>
+  virtual CefRefPtr<font color="black">&#60;</font>CefBinaryValue<font color="black">&#62;</font> Copy<font color="black">(</font><font color="black">)</font> <font color="black">=</font><font color="maroon">0</font>;
+
+  <font color="green">///</font>
+  <font color="green">// Returns the data size.</font>
+  <font color="green">///</font>
+  <font color="green">/*--cef()--*/</font>
+  virtual size_t GetSize<font color="black">(</font><font color="black">)</font> <font color="black">=</font><font color="maroon">0</font>;
+
+  <font color="green">///</font>
+  <font color="green">// Read up to |buffer_size| number of bytes into |buffer|. Reading begins at</font>
+  <font color="green">// the specified byte |data_offset|. Returns the number of bytes read.</font>
+  <font color="green">///</font>
+  <font color="green">/*--cef()--*/</font>
+  virtual size_t GetData<font color="black">(</font><font color="blue">void</font><font color="black">*</font> buffer,
+                         size_t buffer_size,
+                         size_t data_offset<font color="black">)</font> <font color="black">=</font><font color="maroon">0</font>;
+<font color="black">}</font>;
+
+
+<font color="green">///</font>
+<font color="green">// Class representing a dictionary value. Can be used on any process and thread.</font>
+<font color="green">///</font>
+<font color="green">/*--cef(source=library)--*/</font>
+<font color="blue">class</font> CefDictionaryValue <font color="black">:</font> <font color="blue">public</font> virtual CefBase <font color="black">{</font>
+ <font color="blue">public</font><font color="black">:</font>
+  <font color="blue">typedef</font> std<font color="black">:</font><font color="black">:</font>vector<font color="black">&#60;</font>CefString<font color="black">&#62;</font> KeyList;
+
+  <font color="green">///</font>
+  <font color="green">// Creates a new object that is not owned by any other object.</font>
+  <font color="green">///</font>
+  <font color="green">/*--cef()--*/</font>
+  <font color="blue">static</font> CefRefPtr<font color="black">&#60;</font>CefDictionaryValue<font color="black">&#62;</font> Create<font color="black">(</font><font color="black">)</font>;
+
+  <font color="green">///</font>
+  <font color="green">// Returns true if this object is valid. Do not call any other methods if this</font>
+  <font color="green">// method returns false.</font>
+  <font color="green">///</font>
+  <font color="green">/*--cef()--*/</font>
+  virtual <font color="blue">bool</font> IsValid<font color="black">(</font><font color="black">)</font> <font color="black">=</font><font color="maroon">0</font>;
+
+  <font color="green">///</font>
+  <font color="green">// Returns true if this object is currently owned by another object.</font>
+  <font color="green">///</font>
+  <font color="green">/*--cef()--*/</font>
+  virtual <font color="blue">bool</font> IsOwned<font color="black">(</font><font color="black">)</font> <font color="black">=</font><font color="maroon">0</font>;
+
+  <font color="green">///</font>
+  <font color="green">// Returns true if the values of this object are read-only. Some APIs may</font>
+  <font color="green">// expose read-only objects.</font>
+  <font color="green">///</font>
+  <font color="green">/*--cef()--*/</font>
+  virtual <font color="blue">bool</font> IsReadOnly<font color="black">(</font><font color="black">)</font> <font color="black">=</font><font color="maroon">0</font>;
+
+  <font color="green">///</font>
+  <font color="green">// Returns a writable copy of this object. If |exclude_empty_children| is true</font>
+  <font color="green">// any empty dictionaries or lists will be excluded from the copy.</font>
+  <font color="green">///</font>
+  <font color="green">/*--cef()--*/</font>
+  virtual CefRefPtr<font color="black">&#60;</font>CefDictionaryValue<font color="black">&#62;</font> Copy<font color="black">(</font><font color="blue">bool</font> exclude_empty_children<font color="black">)</font> <font color="black">=</font><font color="maroon">0</font>;
+
+  <font color="green">///</font>
+  <font color="green">// Returns the number of values.</font>
+  <font color="green">///</font>
+  <font color="green">/*--cef()--*/</font>
+  virtual size_t GetSize<font color="black">(</font><font color="black">)</font> <font color="black">=</font><font color="maroon">0</font>;
+
+  <font color="green">///</font>
+  <font color="green">// Removes all values. Returns true on success.</font>
+  <font color="green">///</font>
+  <font color="green">/*--cef()--*/</font>
+  virtual <font color="blue">bool</font> Clear<font color="black">(</font><font color="black">)</font> <font color="black">=</font><font color="maroon">0</font>;
+
+  <font color="green">///</font>
+  <font color="green">// Returns true if the current dictionary has a value for the given key.</font>
+  <font color="green">///</font>
+  <font color="green">/*--cef()--*/</font>
+  virtual <font color="blue">bool</font> HasKey<font color="black">(</font><font color="blue">const</font> CefString<font color="black">&</font> key<font color="black">)</font> <font color="black">=</font><font color="maroon">0</font>;
+
+  <font color="green">///</font>
+  <font color="green">// Reads all keys for this dictionary into the specified vector.</font>
+  <font color="green">///</font>
+  <font color="green">/*--cef()--*/</font>
+  virtual <font color="blue">bool</font> GetKeys<font color="black">(</font>KeyList<font color="black">&</font> keys<font color="black">)</font> <font color="black">=</font><font color="maroon">0</font>;
+
+  <font color="green">///</font>
+  <font color="green">// Removes the value at the specified key. Returns true is the value was</font>
+  <font color="green">// removed successfully.</font>
+  <font color="green">///</font>
+  <font color="green">/*--cef()--*/</font>
+  virtual <font color="blue">bool</font> Remove<font color="black">(</font><font color="blue">const</font> CefString<font color="black">&</font> key<font color="black">)</font> <font color="black">=</font><font color="maroon">0</font>;
+
+  <font color="green">///</font>
+  <font color="green">// Returns the value type for the specified key.</font>
+  <font color="green">///</font>
+  <font color="green">/*--cef(default_retval=VTYPE_INVALID)--*/</font>
+  virtual CefValueType GetType<font color="black">(</font><font color="blue">const</font> CefString<font color="black">&</font> key<font color="black">)</font> <font color="black">=</font><font color="maroon">0</font>;
+
+  <font color="green">///</font>
+  <font color="green">// Returns the value at the specified key as type bool.</font>
+  <font color="green">///</font>
+  <font color="green">/*--cef()--*/</font>
+  virtual <font color="blue">bool</font> GetBool<font color="black">(</font><font color="blue">const</font> CefString<font color="black">&</font> key<font color="black">)</font> <font color="black">=</font><font color="maroon">0</font>;
+
+  <font color="green">///</font>
+  <font color="green">// Returns the value at the specified key as type int.</font>
+  <font color="green">///</font>
+  <font color="green">/*--cef()--*/</font>
+  virtual <font color="blue">int</font> GetInt<font color="black">(</font><font color="blue">const</font> CefString<font color="black">&</font> key<font color="black">)</font> <font color="black">=</font><font color="maroon">0</font>;
+
+  <font color="green">///</font>
+  <font color="green">// Returns the value at the specified key as type double.</font>
+  <font color="green">///</font>
+  <font color="green">/*--cef()--*/</font>
+  virtual <font color="blue">double</font> GetDouble<font color="black">(</font><font color="blue">const</font> CefString<font color="black">&</font> key<font color="black">)</font> <font color="black">=</font><font color="maroon">0</font>;
+
+  <font color="green">///</font>
+  <font color="green">// Returns the value at the specified key as type string.</font>
+  <font color="green">///</font>
+  <font color="green">/*--cef()--*/</font>
+  virtual CefString GetString<font color="black">(</font><font color="blue">const</font> CefString<font color="black">&</font> key<font color="black">)</font> <font color="black">=</font><font color="maroon">0</font>;
+
+  <font color="green">///</font>
+  <font color="green">// Returns the value at the specified key as type binary.</font>
+  <font color="green">///</font>
+  <font color="green">/*--cef()--*/</font>
+  virtual CefRefPtr<font color="black">&#60;</font>CefBinaryValue<font color="black">&#62;</font> GetBinary<font color="black">(</font><font color="blue">const</font> CefString<font color="black">&</font> key<font color="black">)</font> <font color="black">=</font><font color="maroon">0</font>;
+
+  <font color="green">///</font>
+  <font color="green">// Returns the value at the specified key as type dictionary.</font>
+  <font color="green">///</font>
+  <font color="green">/*--cef()--*/</font>
+  virtual CefRefPtr<font color="black">&#60;</font>CefDictionaryValue<font color="black">&#62;</font> GetDictionary<font color="black">(</font><font color="blue">const</font> CefString<font color="black">&</font> key<font color="black">)</font> <font color="black">=</font><font color="maroon">0</font>;
+
+  <font color="green">///</font>
+  <font color="green">// Returns the value at the specified key as type list.</font>
+  <font color="green">///</font>
+  <font color="green">/*--cef()--*/</font>
+  virtual CefRefPtr<font color="black">&#60;</font>CefListValue<font color="black">&#62;</font> GetList<font color="black">(</font><font color="blue">const</font> CefString<font color="black">&</font> key<font color="black">)</font> <font color="black">=</font><font color="maroon">0</font>;
+
+  <font color="green">///</font>
+  <font color="green">// Sets the value at the specified key as type null. Returns true if the</font>
+  <font color="green">// value was set successfully.</font>
+  <font color="green">///</font>
+  <font color="green">/*--cef()--*/</font>
+  virtual <font color="blue">bool</font> SetNull<font color="black">(</font><font color="blue">const</font> CefString<font color="black">&</font> key<font color="black">)</font> <font color="black">=</font><font color="maroon">0</font>;
+
+  <font color="green">///</font>
+  <font color="green">// Sets the value at the specified key as type bool. Returns true if the</font>
+  <font color="green">// value was set successfully.</font>
+  <font color="green">///</font>
+  <font color="green">/*--cef()--*/</font>
+  virtual <font color="blue">bool</font> SetBool<font color="black">(</font><font color="blue">const</font> CefString<font color="black">&</font> key, <font color="blue">bool</font> value<font color="black">)</font> <font color="black">=</font><font color="maroon">0</font>;
+
+  <font color="green">///</font>
+  <font color="green">// Sets the value at the specified key as type int. Returns true if the</font>
+  <font color="green">// value was set successfully.</font>
+  <font color="green">///</font>
+  <font color="green">/*--cef()--*/</font>
+  virtual <font color="blue">bool</font> SetInt<font color="black">(</font><font color="blue">const</font> CefString<font color="black">&</font> key, <font color="blue">int</font> value<font color="black">)</font> <font color="black">=</font><font color="maroon">0</font>;
+
+  <font color="green">///</font>
+  <font color="green">// Sets the value at the specified key as type double. Returns true if the</font>
+  <font color="green">// value was set successfully.</font>
+  <font color="green">///</font>
+  <font color="green">/*--cef()--*/</font>
+  virtual <font color="blue">bool</font> SetDouble<font color="black">(</font><font color="blue">const</font> CefString<font color="black">&</font> key, <font color="blue">double</font> value<font color="black">)</font> <font color="black">=</font><font color="maroon">0</font>;
+
+  <font color="green">///</font>
+  <font color="green">// Sets the value at the specified key as type string. Returns true if the</font>
+  <font color="green">// value was set successfully.</font>
+  <font color="green">///</font>
+  <font color="green">/*--cef(optional_param=value)--*/</font>
+  virtual <font color="blue">bool</font> SetString<font color="black">(</font><font color="blue">const</font> CefString<font color="black">&</font> key, <font color="blue">const</font> CefString<font color="black">&</font> value<font color="black">)</font> <font color="black">=</font><font color="maroon">0</font>;
+
+  <font color="green">///</font>
+  <font color="green">// Sets the value at the specified key as type binary. Returns true if the</font>
+  <font color="green">// value was set successfully. If |value| is currently owned by another object</font>
+  <font color="green">// then the value will be copied and the |value| reference will not change.</font>
+  <font color="green">// Otherwise, ownership will be transferred to this object and the |value|</font>
+  <font color="green">// reference will be invalidated.</font>
+  <font color="green">///</font>
+  <font color="green">/*--cef()--*/</font>
+  virtual <font color="blue">bool</font> SetBinary<font color="black">(</font><font color="blue">const</font> CefString<font color="black">&</font> key,
+                         CefRefPtr<font color="black">&#60;</font>CefBinaryValue<font color="black">&#62;</font> value<font color="black">)</font> <font color="black">=</font><font color="maroon">0</font>;
+
+  <font color="green">///</font>
+  <font color="green">// Sets the value at the specified key as type dict. Returns true if the</font>
+  <font color="green">// value was set successfully. After calling this method the |value| object</font>
+  <font color="green">// will no longer be valid. If |value| is currently owned by another object</font>
+  <font color="green">// then the value will be copied and the |value| reference will not change.</font>
+  <font color="green">// Otherwise, ownership will be transferred to this object and the |value|</font>
+  <font color="green">// reference will be invalidated.</font>
+  <font color="green">///</font>
+  <font color="green">/*--cef()--*/</font>
+  virtual <font color="blue">bool</font> SetDictionary<font color="black">(</font><font color="blue">const</font> CefString<font color="black">&</font> key,
+                             CefRefPtr<font color="black">&#60;</font>CefDictionaryValue<font color="black">&#62;</font> value<font color="black">)</font> <font color="black">=</font><font color="maroon">0</font>;
+
+  <font color="green">///</font>
+  <font color="green">// Sets the value at the specified key as type list. Returns true if the</font>
+  <font color="green">// value was set successfully. After calling this method the |value| object</font>
+  <font color="green">// will no longer be valid. If |value| is currently owned by another object</font>
+  <font color="green">// then the value will be copied and the |value| reference will not change.</font>
+  <font color="green">// Otherwise, ownership will be transferred to this object and the |value|</font>
+  <font color="green">// reference will be invalidated.</font>
+  <font color="green">///</font>
+  <font color="green">/*--cef()--*/</font>
+  virtual <font color="blue">bool</font> SetList<font color="black">(</font><font color="blue">const</font> CefString<font color="black">&</font> key,
+                       CefRefPtr<font color="black">&#60;</font>CefListValue<font color="black">&#62;</font> value<font color="black">)</font> <font color="black">=</font><font color="maroon">0</font>;
+<font color="black">}</font>;
+
+
+<font color="green">///</font>
+<font color="green">// Class representing a list value. Can be used on any process and thread.</font>
+<font color="green">///</font>
+<font color="green">/*--cef(source=library)--*/</font>
+<font color="blue">class</font> CefListValue <font color="black">:</font> <font color="blue">public</font> virtual CefBase <font color="black">{</font>
+ <font color="blue">public</font><font color="black">:</font>
+  <font color="green">///</font>
+  <font color="green">// Creates a new object that is not owned by any other object.</font>
+  <font color="green">///</font>
+  <font color="green">/*--cef()--*/</font>
+  <font color="blue">static</font> CefRefPtr<font color="black">&#60;</font>CefListValue<font color="black">&#62;</font> Create<font color="black">(</font><font color="black">)</font>;
+
+  <font color="green">///</font>
+  <font color="green">// Returns true if this object is valid. Do not call any other methods if this</font>
+  <font color="green">// method returns false.</font>
+  <font color="green">///</font>
+  <font color="green">/*--cef()--*/</font>
+  virtual <font color="blue">bool</font> IsValid<font color="black">(</font><font color="black">)</font> <font color="black">=</font><font color="maroon">0</font>;
+
+  <font color="green">///</font>
+  <font color="green">// Returns true if this object is currently owned by another object.</font>
+  <font color="green">///</font>
+  <font color="green">/*--cef()--*/</font>
+  virtual <font color="blue">bool</font> IsOwned<font color="black">(</font><font color="black">)</font> <font color="black">=</font><font color="maroon">0</font>;
+
+  <font color="green">///</font>
+  <font color="green">// Returns true if the values of this object are read-only. Some APIs may</font>
+  <font color="green">// expose read-only objects.</font>
+  <font color="green">///</font>
+  <font color="green">/*--cef()--*/</font>
+  virtual <font color="blue">bool</font> IsReadOnly<font color="black">(</font><font color="black">)</font> <font color="black">=</font><font color="maroon">0</font>;
+
+  <font color="green">///</font>
+  <font color="green">// Returns a writable copy of this object.</font>
+  <font color="green">///</font>
+  <font color="green">/*--cef()--*/</font>
+  virtual CefRefPtr<font color="black">&#60;</font>CefListValue<font color="black">&#62;</font> Copy<font color="black">(</font><font color="black">)</font> <font color="black">=</font><font color="maroon">0</font>;
+
+  <font color="green">///</font>
+  <font color="green">// Sets the number of values. If the number of values is expanded all</font>
+  <font color="green">// new value slots will default to type null. Returns true on success.</font>
+  <font color="green">///</font>
+  <font color="green">/*--cef()--*/</font>
+  virtual <font color="blue">bool</font> SetSize<font color="black">(</font>size_t size<font color="black">)</font> <font color="black">=</font><font color="maroon">0</font>;
+
+  <font color="green">///</font>
+  <font color="green">// Returns the number of values.</font>
+  <font color="green">///</font>
+  <font color="green">/*--cef()--*/</font>
+  virtual size_t GetSize<font color="black">(</font><font color="black">)</font> <font color="black">=</font><font color="maroon">0</font>;
+
+  <font color="green">///</font>
+  <font color="green">// Removes all values. Returns true on success.</font>
+  <font color="green">///</font>
+  <font color="green">/*--cef()--*/</font>
+  virtual <font color="blue">bool</font> Clear<font color="black">(</font><font color="black">)</font> <font color="black">=</font><font color="maroon">0</font>;
+
+  <font color="green">///</font>
+  <font color="green">// Removes the value at the specified index.</font>
+  <font color="green">///</font>
+  <font color="green">/*--cef(index_param=index)--*/</font>
+  virtual <font color="blue">bool</font> Remove<font color="black">(</font><font color="blue">int</font> index<font color="black">)</font> <font color="black">=</font><font color="maroon">0</font>;
+
+  <font color="green">///</font>
+  <font color="green">// Returns the value type at the specified index.</font>
+  <font color="green">///</font>
+  <font color="green">/*--cef(default_retval=VTYPE_INVALID,index_param=index)--*/</font>
+  virtual CefValueType GetType<font color="black">(</font><font color="blue">int</font> index<font color="black">)</font> <font color="black">=</font><font color="maroon">0</font>;
+
+  <font color="green">///</font>
+  <font color="green">// Returns the value at the specified index as type bool.</font>
+  <font color="green">///</font>
+  <font color="green">/*--cef(index_param=index)--*/</font>
+  virtual <font color="blue">bool</font> GetBool<font color="black">(</font><font color="blue">int</font> index<font color="black">)</font> <font color="black">=</font><font color="maroon">0</font>;
+
+  <font color="green">///</font>
+  <font color="green">// Returns the value at the specified index as type int.</font>
+  <font color="green">///</font>
+  <font color="green">/*--cef(index_param=index)--*/</font>
+  virtual <font color="blue">int</font> GetInt<font color="black">(</font><font color="blue">int</font> index<font color="black">)</font> <font color="black">=</font><font color="maroon">0</font>;
+
+  <font color="green">///</font>
+  <font color="green">// Returns the value at the specified index as type double.</font>
+  <font color="green">///</font>
+  <font color="green">/*--cef(index_param=index)--*/</font>
+  virtual <font color="blue">double</font> GetDouble<font color="black">(</font><font color="blue">int</font> index<font color="black">)</font> <font color="black">=</font><font color="maroon">0</font>;
+
+  <font color="green">///</font>
+  <font color="green">// Returns the value at the specified index as type string.</font>
+  <font color="green">///</font>
+  <font color="green">/*--cef(index_param=index)--*/</font>
+  virtual CefString GetString<font color="black">(</font><font color="blue">int</font> index<font color="black">)</font> <font color="black">=</font><font color="maroon">0</font>;
+
+  <font color="green">///</font>
+  <font color="green">// Returns the value at the specified index as type binary.</font>
+  <font color="green">///</font>
+  <font color="green">/*--cef(index_param=index)--*/</font>
+  virtual CefRefPtr<font color="black">&#60;</font>CefBinaryValue<font color="black">&#62;</font> GetBinary<font color="black">(</font><font color="blue">int</font> index<font color="black">)</font> <font color="black">=</font><font color="maroon">0</font>;
+
+  <font color="green">///</font>
+  <font color="green">// Returns the value at the specified index as type dictionary.</font>
+  <font color="green">///</font>
+  <font color="green">/*--cef(index_param=index)--*/</font>
+  virtual CefRefPtr<font color="black">&#60;</font>CefDictionaryValue<font color="black">&#62;</font> GetDictionary<font color="black">(</font><font color="blue">int</font> index<font color="black">)</font> <font color="black">=</font><font color="maroon">0</font>;
+
+  <font color="green">///</font>
+  <font color="green">// Returns the value at the specified index as type list.</font>
+  <font color="green">///</font>
+  <font color="green">/*--cef(index_param=index)--*/</font>
+  virtual CefRefPtr<font color="black">&#60;</font>CefListValue<font color="black">&#62;</font> GetList<font color="black">(</font><font color="blue">int</font> index<font color="black">)</font> <font color="black">=</font><font color="maroon">0</font>;
+
+  <font color="green">///</font>
+  <font color="green">// Sets the value at the specified index as type null. Returns true if the</font>
+  <font color="green">// value was set successfully.</font>
+  <font color="green">///</font>
+  <font color="green">/*--cef(index_param=index)--*/</font>
+  virtual <font color="blue">bool</font> SetNull<font color="black">(</font><font color="blue">int</font> index<font color="black">)</font> <font color="black">=</font><font color="maroon">0</font>;
+
+  <font color="green">///</font>
+  <font color="green">// Sets the value at the specified index as type bool. Returns true if the</font>
+  <font color="green">// value was set successfully.</font>
+  <font color="green">///</font>
+  <font color="green">/*--cef(index_param=index)--*/</font>
+  virtual <font color="blue">bool</font> SetBool<font color="black">(</font><font color="blue">int</font> index, <font color="blue">bool</font> value<font color="black">)</font> <font color="black">=</font><font color="maroon">0</font>;
+
+  <font color="green">///</font>
+  <font color="green">// Sets the value at the specified index as type int. Returns true if the</font>
+  <font color="green">// value was set successfully.</font>
+  <font color="green">///</font>
+  <font color="green">/*--cef(index_param=index)--*/</font>
+  virtual <font color="blue">bool</font> SetInt<font color="black">(</font><font color="blue">int</font> index, <font color="blue">int</font> value<font color="black">)</font> <font color="black">=</font><font color="maroon">0</font>;
+
+  <font color="green">///</font>
+  <font color="green">// Sets the value at the specified index as type double. Returns true if the</font>
+  <font color="green">// value was set successfully.</font>
+  <font color="green">///</font>
+  <font color="green">/*--cef(index_param=index)--*/</font>
+  virtual <font color="blue">bool</font> SetDouble<font color="black">(</font><font color="blue">int</font> index, <font color="blue">double</font> value<font color="black">)</font> <font color="black">=</font><font color="maroon">0</font>;
+
+  <font color="green">///</font>
+  <font color="green">// Sets the value at the specified index as type string. Returns true if the</font>
+  <font color="green">// value was set successfully.</font>
+  <font color="green">///</font>
+  <font color="green">/*--cef(optional_param=value,index_param=index)--*/</font>
+  virtual <font color="blue">bool</font> SetString<font color="black">(</font><font color="blue">int</font> index, <font color="blue">const</font> CefString<font color="black">&</font> value<font color="black">)</font> <font color="black">=</font><font color="maroon">0</font>;
+
+  <font color="green">///</font>
+  <font color="green">// Sets the value at the specified index as type binary. Returns true if the</font>
+  <font color="green">// value was set successfully. After calling this method the |value| object</font>
+  <font color="green">// will no longer be valid. If |value| is currently owned by another object</font>
+  <font color="green">// then the value will be copied and the |value| reference will not change.</font>
+  <font color="green">// Otherwise, ownership will be transferred to this object and the |value|</font>
+  <font color="green">// reference will be invalidated.</font>
+  <font color="green">///</font>
+  <font color="green">/*--cef(index_param=index)--*/</font>
+  virtual <font color="blue">bool</font> SetBinary<font color="black">(</font><font color="blue">int</font> index, CefRefPtr<font color="black">&#60;</font>CefBinaryValue<font color="black">&#62;</font> value<font color="black">)</font> <font color="black">=</font><font color="maroon">0</font>;
+
+  <font color="green">///</font>
+  <font color="green">// Sets the value at the specified index as type dict. Returns true if the</font>
+  <font color="green">// value was set successfully. After calling this method the |value| object</font>
+  <font color="green">// will no longer be valid. If |value| is currently owned by another object</font>
+  <font color="green">// then the value will be copied and the |value| reference will not change.</font>
+  <font color="green">// Otherwise, ownership will be transferred to this object and the |value|</font>
+  <font color="green">// reference will be invalidated.</font>
+  <font color="green">///</font>
+  <font color="green">/*--cef(index_param=index)--*/</font>
+  virtual <font color="blue">bool</font> SetDictionary<font color="black">(</font><font color="blue">int</font> index, CefRefPtr<font color="black">&#60;</font>CefDictionaryValue<font color="black">&#62;</font> value<font color="black">)</font> <font color="black">=</font><font color="maroon">0</font>;
+
+  <font color="green">///</font>
+  <font color="green">// Sets the value at the specified index as type list. Returns true if the</font>
+  <font color="green">// value was set successfully. After calling this method the |value| object</font>
+  <font color="green">// will no longer be valid. If |value| is currently owned by another object</font>
+  <font color="green">// then the value will be copied and the |value| reference will not change.</font>
+  <font color="green">// Otherwise, ownership will be transferred to this object and the |value|</font>
+  <font color="green">// reference will be invalidated.</font>
+  <font color="green">///</font>
+  <font color="green">/*--cef(index_param=index)--*/</font>
+  virtual <font color="blue">bool</font> SetList<font color="black">(</font><font color="blue">int</font> index, CefRefPtr<font color="black">&#60;</font>CefListValue<font color="black">&#62;</font> value<font color="black">)</font> <font color="black">=</font><font color="maroon">0</font>;
+<font color="black">}</font>;
+
+<font color="blue">#endif</font>  <font color="green">// CEF_INCLUDE_CEF_VALUES_H_</font>
+
+</PRE>
+</BODY>
+</HTML>

@@ -1,0 +1,228 @@
+<HTML>
+<HEAD>
+<TITLE>
+cef_context_menu_handler.h
+</TITLE>
+</HEAD>
+<BODY>
+<PRE>
+<font color="green">// Copyright (c) 2012 Marshall A. Greenblatt. All rights reserved.</font>
+<font color="green">//</font>
+<font color="green">// Redistribution and use in source and binary forms, with or without</font>
+<font color="green">// modification, are permitted provided that the following conditions are</font>
+<font color="green">// met:</font>
+<font color="green">//</font>
+<font color="green">//    * Redistributions of source code must retain the above copyright</font>
+<font color="green">// notice, this list of conditions and the following disclaimer.</font>
+<font color="green">//    * Redistributions in binary form must reproduce the above</font>
+<font color="green">// copyright notice, this list of conditions and the following disclaimer</font>
+<font color="green">// in the documentation and/or other materials provided with the</font>
+<font color="green">// distribution.</font>
+<font color="green">//    * Neither the name of Google Inc. nor the name Chromium Embedded</font>
+<font color="green">// Framework nor the names of its contributors may be used to endorse</font>
+<font color="green">// or promote products derived from this software without specific prior</font>
+<font color="green">// written permission.</font>
+<font color="green">//</font>
+<font color="green">// THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS</font>
+<font color="green">// "AS IS" AND ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT</font>
+<font color="green">// LIMITED TO, THE IMPLIED WARRANTIES OF MERCHANTABILITY AND FITNESS FOR</font>
+<font color="green">// A PARTICULAR PURPOSE ARE DISCLAIMED. IN NO EVENT SHALL THE COPYRIGHT</font>
+<font color="green">// OWNER OR CONTRIBUTORS BE LIABLE FOR ANY DIRECT, INDIRECT, INCIDENTAL,</font>
+<font color="green">// SPECIAL, EXEMPLARY, OR CONSEQUENTIAL DAMAGES (INCLUDING, BUT NOT</font>
+<font color="green">// LIMITED TO, PROCUREMENT OF SUBSTITUTE GOODS OR SERVICES; LOSS OF USE,</font>
+<font color="green">// DATA, OR PROFITS; OR BUSINESS INTERRUPTION) HOWEVER CAUSED AND ON ANY</font>
+<font color="green">// THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT</font>
+<font color="green">// (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE</font>
+<font color="green">// OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.</font>
+<font color="green">//</font>
+<font color="green">// ---------------------------------------------------------------------------</font>
+<font color="green">//</font>
+<font color="green">// The contents of this file must follow a specific format in order to</font>
+<font color="green">// support the CEF translator tool. See the translator.README.txt file in the</font>
+<font color="green">// tools directory for more information.</font>
+<font color="green">//</font>
+
+<font color="blue">#ifndef</font> CEF_INCLUDE_CEF_CONTEXT_MENU_HANDLER_H_
+<font color="blue">#define</font> CEF_INCLUDE_CEF_CONTEXT_MENU_HANDLER_H_
+<font color="blue">#pragma</font> once
+
+<font color="blue">#include</font> <font color="maroon">"include/cef_base.h"</font>
+<font color="blue">#include</font> <font color="maroon">"include/cef_browser.h"</font>
+<font color="blue">#include</font> <font color="maroon">"include/cef_frame.h"</font>
+<font color="blue">#include</font> <font color="maroon">"include/cef_menu_model.h"</font>
+
+<font color="blue">class</font> CefContextMenuParams;
+
+<font color="green">///</font>
+<font color="green">// Implement this interface to handle context menu events. The methods of this</font>
+<font color="green">// class will be called on the UI thread.</font>
+<font color="green">///</font>
+<font color="green">/*--cef(source=client)--*/</font>
+<font color="blue">class</font> CefContextMenuHandler <font color="black">:</font> <font color="blue">public</font> virtual CefBase <font color="black">{</font>
+ <font color="blue">public</font><font color="black">:</font>
+  <font color="blue">typedef</font> cef_event_flags_t EventFlags;
+
+  <font color="green">///</font>
+  <font color="green">// Called before a context menu is displayed. |params| provides information</font>
+  <font color="green">// about the context menu state. |model| initially contains the default</font>
+  <font color="green">// context menu. The |model| can be cleared to show no context menu or</font>
+  <font color="green">// modified to show a custom menu. Do not keep references to |params| or</font>
+  <font color="green">// |model| outside of this callback.</font>
+  <font color="green">///</font>
+  <font color="green">/*--cef()--*/</font>
+  virtual <font color="blue">void</font> OnBeforeContextMenu<font color="black">(</font>CefRefPtr<font color="black">&#60;</font>CefBrowser<font color="black">&#62;</font> browser,
+                                   CefRefPtr<font color="black">&#60;</font>CefFrame<font color="black">&#62;</font> frame,
+                                   CefRefPtr<font color="black">&#60;</font>CefContextMenuParams<font color="black">&#62;</font> params,
+                                   CefRefPtr<font color="black">&#60;</font>CefMenuModel<font color="black">&#62;</font> model<font color="black">)</font> <font color="black">{</font><font color="black">}</font>
+
+  <font color="green">///</font>
+  <font color="green">// Called to execute a command selected from the context menu. Return true if</font>
+  <font color="green">// the command was handled or false for the default implementation. See</font>
+  <font color="green">// cef_menu_id_t for the command ids that have default implementations. All</font>
+  <font color="green">// user-defined command ids should be between MENU_ID_USER_FIRST and</font>
+  <font color="green">// MENU_ID_USER_LAST. |params| will have the same values as what was passed to</font>
+  <font color="green">// OnBeforeContextMenu(). Do not keep a reference to |params| outside of this</font>
+  <font color="green">// callback.</font>
+  <font color="green">///</font>
+  <font color="green">/*--cef()--*/</font>
+  virtual <font color="blue">bool</font> OnContextMenuCommand<font color="black">(</font>CefRefPtr<font color="black">&#60;</font>CefBrowser<font color="black">&#62;</font> browser,
+                                    CefRefPtr<font color="black">&#60;</font>CefFrame<font color="black">&#62;</font> frame,
+                                    CefRefPtr<font color="black">&#60;</font>CefContextMenuParams<font color="black">&#62;</font> params,
+                                    <font color="blue">int</font> command_id,
+                                    EventFlags event_flags<font color="black">)</font> <font color="black">{</font> <font color="blue">return</font> <font color="blue">false</font>; <font color="black">}</font>
+
+  <font color="green">///</font>
+  <font color="green">// Called when the context menu is dismissed irregardless of whether the menu</font>
+  <font color="green">// was empty or a command was selected.</font>
+  <font color="green">///</font>
+  <font color="green">/*--cef()--*/</font>
+  virtual <font color="blue">void</font> OnContextMenuDismissed<font color="black">(</font>CefRefPtr<font color="black">&#60;</font>CefBrowser<font color="black">&#62;</font> browser,
+                                      CefRefPtr<font color="black">&#60;</font>CefFrame<font color="black">&#62;</font> frame<font color="black">)</font> <font color="black">{</font><font color="black">}</font>
+<font color="black">}</font>;
+
+
+<font color="green">///</font>
+<font color="green">// Provides information about the context menu state. The ethods of this class</font>
+<font color="green">// can only be accessed on browser process the UI thread.</font>
+<font color="green">///</font>
+<font color="green">/*--cef(source=library)--*/</font>
+<font color="blue">class</font> CefContextMenuParams <font color="black">:</font> <font color="blue">public</font> virtual CefBase <font color="black">{</font>
+ <font color="blue">public</font><font color="black">:</font>
+  <font color="blue">typedef</font> cef_context_menu_type_flags_t TypeFlags;
+  <font color="blue">typedef</font> cef_context_menu_media_type_t MediaType;
+  <font color="blue">typedef</font> cef_context_menu_media_state_flags_t MediaStateFlags;
+  <font color="blue">typedef</font> cef_context_menu_edit_state_flags_t EditStateFlags;
+
+  <font color="green">///</font>
+  <font color="green">// Returns the X coordinate of the mouse where the context menu was invoked.</font>
+  <font color="green">// Coords are relative to the associated RenderView's origin.</font>
+  <font color="green">///</font>
+  <font color="green">/*--cef()--*/</font>
+  virtual <font color="blue">int</font> GetXCoord<font color="black">(</font><font color="black">)</font> <font color="black">=</font><font color="maroon">0</font>;
+
+  <font color="green">///</font>
+  <font color="green">// Returns the Y coordinate of the mouse where the context menu was invoked.</font>
+  <font color="green">// Coords are relative to the associated RenderView's origin.</font>
+  <font color="green">///</font>
+  <font color="green">/*--cef()--*/</font>
+  virtual <font color="blue">int</font> GetYCoord<font color="black">(</font><font color="black">)</font> <font color="black">=</font><font color="maroon">0</font>;
+
+  <font color="green">///</font>
+  <font color="green">// Returns flags representing the type of node that the context menu was</font>
+  <font color="green">// invoked on.</font>
+  <font color="green">///</font>
+  <font color="green">/*--cef(default_retval=CM_TYPEFLAG_NONE)--*/</font>
+  virtual TypeFlags GetTypeFlags<font color="black">(</font><font color="black">)</font> <font color="black">=</font><font color="maroon">0</font>;
+
+  <font color="green">///</font>
+  <font color="green">// Returns the URL of the link, if any, that encloses the node that the</font>
+  <font color="green">// context menu was invoked on.</font>
+  <font color="green">///</font>
+  <font color="green">/*--cef()--*/</font>
+  virtual CefString GetLinkUrl<font color="black">(</font><font color="black">)</font> <font color="black">=</font><font color="maroon">0</font>;
+
+  <font color="green">///</font>
+  <font color="green">// Returns the link URL, if any, to be used ONLY for "copy link address". We</font>
+  <font color="green">// don't validate this field in the frontend process.</font>
+  <font color="green">///</font>
+  <font color="green">/*--cef()--*/</font>
+  virtual CefString GetUnfilteredLinkUrl<font color="black">(</font><font color="black">)</font> <font color="black">=</font><font color="maroon">0</font>;
+
+  <font color="green">///</font>
+  <font color="green">// Returns the source URL, if any, for the element that the context menu was</font>
+  <font color="green">// invoked on. Example of elements with source URLs are img, audio, and video.</font>
+  <font color="green">///</font>
+  <font color="green">/*--cef()--*/</font>
+  virtual CefString GetSourceUrl<font color="black">(</font><font color="black">)</font> <font color="black">=</font><font color="maroon">0</font>;
+
+  <font color="green">///</font>
+  <font color="green">// Returns true if the context menu was invoked on a blocked image.</font>
+  <font color="green">///</font>
+  <font color="green">/*--cef()--*/</font>
+  virtual <font color="blue">bool</font> IsImageBlocked<font color="black">(</font><font color="black">)</font> <font color="black">=</font><font color="maroon">0</font>;
+
+  <font color="green">///</font>
+  <font color="green">// Returns the URL of the top level page that the context menu was invoked on.</font>
+  <font color="green">///</font>
+  <font color="green">/*--cef()--*/</font>
+  virtual CefString GetPageUrl<font color="black">(</font><font color="black">)</font> <font color="black">=</font><font color="maroon">0</font>;
+
+  <font color="green">///</font>
+  <font color="green">// Returns the URL of the subframe that the context menu was invoked on.</font>
+  <font color="green">///</font>
+  <font color="green">/*--cef()--*/</font>
+  virtual CefString GetFrameUrl<font color="black">(</font><font color="black">)</font> <font color="black">=</font><font color="maroon">0</font>;
+
+  <font color="green">///</font>
+  <font color="green">// Returns the character encoding of the subframe that the context menu was</font>
+  <font color="green">// invoked on.</font>
+  <font color="green">///</font>
+  <font color="green">/*--cef()--*/</font>
+  virtual CefString GetFrameCharset<font color="black">(</font><font color="black">)</font> <font color="black">=</font><font color="maroon">0</font>;
+
+  <font color="green">///</font>
+  <font color="green">// Returns the type of context node that the context menu was invoked on.</font>
+  <font color="green">///</font>
+  <font color="green">/*--cef(default_retval=CM_MEDIATYPE_NONE)--*/</font>
+  virtual MediaType GetMediaType<font color="black">(</font><font color="black">)</font> <font color="black">=</font><font color="maroon">0</font>;
+
+  <font color="green">///</font>
+  <font color="green">// Returns flags representing the actions supported by the media element, if</font>
+  <font color="green">// any, that the context menu was invoked on.</font>
+  <font color="green">///</font>
+  <font color="green">/*--cef(default_retval=CM_MEDIAFLAG_NONE)--*/</font>
+  virtual MediaStateFlags GetMediaStateFlags<font color="black">(</font><font color="black">)</font> <font color="black">=</font><font color="maroon">0</font>;
+
+  <font color="green">///</font>
+  <font color="green">// Returns the text of the selection, if any, that the context menu was</font>
+  <font color="green">// invoked on.</font>
+  <font color="green">///</font>
+  <font color="green">/*--cef()--*/</font>
+  virtual CefString GetSelectionText<font color="black">(</font><font color="black">)</font> <font color="black">=</font><font color="maroon">0</font>;
+
+  <font color="green">///</font>
+  <font color="green">// Returns true if the context menu was invoked on an editable node.</font>
+  <font color="green">///</font>
+  <font color="green">/*--cef()--*/</font>
+  virtual <font color="blue">bool</font> IsEditable<font color="black">(</font><font color="black">)</font> <font color="black">=</font><font color="maroon">0</font>;
+
+  <font color="green">///</font>
+  <font color="green">// Returns true if the context menu was invoked on an editable node where</font>
+  <font color="green">// speech-input is enabled.</font>
+  <font color="green">///</font>
+  <font color="green">/*--cef()--*/</font>
+  virtual <font color="blue">bool</font> IsSpeechInputEnabled<font color="black">(</font><font color="black">)</font> <font color="black">=</font><font color="maroon">0</font>;
+
+  <font color="green">///</font>
+  <font color="green">// Returns flags representing the actions supported by the editable node, if</font>
+  <font color="green">// any, that the context menu was invoked on.</font>
+  <font color="green">///</font>
+  <font color="green">/*--cef(default_retval=CM_EDITFLAG_NONE)--*/</font>
+  virtual EditStateFlags GetEditStateFlags<font color="black">(</font><font color="black">)</font> <font color="black">=</font><font color="maroon">0</font>;
+<font color="black">}</font>;
+
+<font color="blue">#endif</font>  <font color="green">// CEF_INCLUDE_CEF_CONTEXT_MENU_HANDLER_H_</font>
+
+</PRE>
+</BODY>
+</HTML>

@@ -1,0 +1,414 @@
+<HTML>
+<HEAD>
+<TITLE>
+cef_menu_model.h
+</TITLE>
+</HEAD>
+<BODY>
+<PRE>
+<font color="green">// Copyright (c) 2012 Marshall A. Greenblatt. All rights reserved.</font>
+<font color="green">//</font>
+<font color="green">// Redistribution and use in source and binary forms, with or without</font>
+<font color="green">// modification, are permitted provided that the following conditions are</font>
+<font color="green">// met:</font>
+<font color="green">//</font>
+<font color="green">//    * Redistributions of source code must retain the above copyright</font>
+<font color="green">// notice, this list of conditions and the following disclaimer.</font>
+<font color="green">//    * Redistributions in binary form must reproduce the above</font>
+<font color="green">// copyright notice, this list of conditions and the following disclaimer</font>
+<font color="green">// in the documentation and/or other materials provided with the</font>
+<font color="green">// distribution.</font>
+<font color="green">//    * Neither the name of Google Inc. nor the name Chromium Embedded</font>
+<font color="green">// Framework nor the names of its contributors may be used to endorse</font>
+<font color="green">// or promote products derived from this software without specific prior</font>
+<font color="green">// written permission.</font>
+<font color="green">//</font>
+<font color="green">// THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS</font>
+<font color="green">// "AS IS" AND ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT</font>
+<font color="green">// LIMITED TO, THE IMPLIED WARRANTIES OF MERCHANTABILITY AND FITNESS FOR</font>
+<font color="green">// A PARTICULAR PURPOSE ARE DISCLAIMED. IN NO EVENT SHALL THE COPYRIGHT</font>
+<font color="green">// OWNER OR CONTRIBUTORS BE LIABLE FOR ANY DIRECT, INDIRECT, INCIDENTAL,</font>
+<font color="green">// SPECIAL, EXEMPLARY, OR CONSEQUENTIAL DAMAGES (INCLUDING, BUT NOT</font>
+<font color="green">// LIMITED TO, PROCUREMENT OF SUBSTITUTE GOODS OR SERVICES; LOSS OF USE,</font>
+<font color="green">// DATA, OR PROFITS; OR BUSINESS INTERRUPTION) HOWEVER CAUSED AND ON ANY</font>
+<font color="green">// THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT</font>
+<font color="green">// (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE</font>
+<font color="green">// OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.</font>
+<font color="green">//</font>
+<font color="green">// ---------------------------------------------------------------------------</font>
+<font color="green">//</font>
+<font color="green">// The contents of this file must follow a specific format in order to</font>
+<font color="green">// support the CEF translator tool. See the translator.README.txt file in the</font>
+<font color="green">// tools directory for more information.</font>
+<font color="green">//</font>
+
+<font color="blue">#ifndef</font> CEF_INCLUDE_CEF_MENU_MODEL_H_
+<font color="blue">#define</font> CEF_INCLUDE_CEF_MENU_MODEL_H_
+<font color="blue">#pragma</font> once
+
+<font color="blue">#include</font> <font color="maroon">"include/cef_base.h"</font>
+
+<font color="green">///</font>
+<font color="green">// Supports creation and modification of menus. See cef_menu_id_t for the</font>
+<font color="green">// command ids that have default implementations. All user-defined command ids</font>
+<font color="green">// should be between MENU_ID_USER_FIRST and MENU_ID_USER_LAST. The methods of</font>
+<font color="green">// this class can only be accessed on the browser process the UI thread.</font>
+<font color="green">///</font>
+<font color="green">/*--cef(source=library)--*/</font>
+<font color="blue">class</font> CefMenuModel <font color="black">:</font> <font color="blue">public</font> virtual CefBase <font color="black">{</font>
+ <font color="blue">public</font><font color="black">:</font>
+  <font color="blue">typedef</font> cef_menu_item_type_t MenuItemType;
+
+  <font color="green">///</font>
+  <font color="green">// Clears the menu. Returns true on success.</font>
+  <font color="green">///</font>
+  <font color="green">/*--cef()--*/</font>
+  virtual <font color="blue">bool</font> Clear<font color="black">(</font><font color="black">)</font> <font color="black">=</font><font color="maroon">0</font>;
+
+  <font color="green">///</font>
+  <font color="green">// Returns the number of items in this menu.</font>
+  <font color="green">///</font>
+  <font color="green">/*--cef()--*/</font>
+  virtual <font color="blue">int</font> GetCount<font color="black">(</font><font color="black">)</font> <font color="black">=</font><font color="maroon">0</font>;
+
+  <font color="green">//</font>
+  <font color="green">// Add a separator to the menu. Returns true on success.</font>
+  <font color="green">///</font>
+  <font color="green">/*--cef()--*/</font>
+  virtual <font color="blue">bool</font> AddSeparator<font color="black">(</font><font color="black">)</font> <font color="black">=</font><font color="maroon">0</font>;
+
+  <font color="green">//</font>
+  <font color="green">// Add an item to the menu. Returns true on success.</font>
+  <font color="green">///</font>
+  <font color="green">/*--cef()--*/</font>
+  virtual <font color="blue">bool</font> AddItem<font color="black">(</font><font color="blue">int</font> command_id,
+                       <font color="blue">const</font> CefString<font color="black">&</font> label<font color="black">)</font> <font color="black">=</font><font color="maroon">0</font>;
+
+  <font color="green">//</font>
+  <font color="green">// Add a check item to the menu. Returns true on success.</font>
+  <font color="green">///</font>
+  <font color="green">/*--cef()--*/</font>
+  virtual <font color="blue">bool</font> AddCheckItem<font color="black">(</font><font color="blue">int</font> command_id,
+                            <font color="blue">const</font> CefString<font color="black">&</font> label<font color="black">)</font> <font color="black">=</font><font color="maroon">0</font>;
+  <font color="green">//</font>
+  <font color="green">// Add a radio item to the menu. Only a single item with the specified</font>
+  <font color="green">// |group_id| can be checked at a time. Returns true on success.</font>
+  <font color="green">///</font>
+  <font color="green">/*--cef()--*/</font>
+  virtual <font color="blue">bool</font> AddRadioItem<font color="black">(</font><font color="blue">int</font> command_id,
+                            <font color="blue">const</font> CefString<font color="black">&</font> label,
+                            <font color="blue">int</font> group_id<font color="black">)</font> <font color="black">=</font><font color="maroon">0</font>;
+
+  <font color="green">//</font>
+  <font color="green">// Add a sub-menu to the menu. The new sub-menu is returned.</font>
+  <font color="green">///</font>
+  <font color="green">/*--cef()--*/</font>
+  virtual CefRefPtr<font color="black">&#60;</font>CefMenuModel<font color="black">&#62;</font> AddSubMenu<font color="black">(</font><font color="blue">int</font> command_id,
+                                             <font color="blue">const</font> CefString<font color="black">&</font> label<font color="black">)</font> <font color="black">=</font><font color="maroon">0</font>;
+
+  <font color="green">//</font>
+  <font color="green">// Insert a separator in the menu at the specified |index|. Returns true on</font>
+  <font color="green">// success.</font>
+  <font color="green">///</font>
+  <font color="green">/*--cef()--*/</font>
+  virtual <font color="blue">bool</font> InsertSeparatorAt<font color="black">(</font><font color="blue">int</font> index<font color="black">)</font> <font color="black">=</font><font color="maroon">0</font>;
+
+  <font color="green">//</font>
+  <font color="green">// Insert an item in the menu at the specified |index|. Returns true on</font>
+  <font color="green">// success.</font>
+  <font color="green">///</font>
+  <font color="green">/*--cef()--*/</font>
+  virtual <font color="blue">bool</font> InsertItemAt<font color="black">(</font><font color="blue">int</font> index,
+                            <font color="blue">int</font> command_id,
+                            <font color="blue">const</font> CefString<font color="black">&</font> label<font color="black">)</font> <font color="black">=</font><font color="maroon">0</font>;
+
+  <font color="green">//</font>
+  <font color="green">// Insert a check item in the menu at the specified |index|. Returns true on</font>
+  <font color="green">// success.</font>
+  <font color="green">///</font>
+  <font color="green">/*--cef()--*/</font>
+  virtual <font color="blue">bool</font> InsertCheckItemAt<font color="black">(</font><font color="blue">int</font> index,
+                                 <font color="blue">int</font> command_id,
+                                 <font color="blue">const</font> CefString<font color="black">&</font> label<font color="black">)</font> <font color="black">=</font><font color="maroon">0</font>;
+
+  <font color="green">//</font>
+  <font color="green">// Insert a radio item in the menu at the specified |index|. Only a single</font>
+  <font color="green">// item with the specified |group_id| can be checked at a time. Returns true</font>
+  <font color="green">// on success.</font>
+  <font color="green">///</font>
+  <font color="green">/*--cef()--*/</font>
+  virtual <font color="blue">bool</font> InsertRadioItemAt<font color="black">(</font><font color="blue">int</font> index,
+                                 <font color="blue">int</font> command_id,
+                                 <font color="blue">const</font> CefString<font color="black">&</font> label,
+                                 <font color="blue">int</font> group_id<font color="black">)</font> <font color="black">=</font><font color="maroon">0</font>;
+
+  <font color="green">//</font>
+  <font color="green">// Insert a sub-menu in the menu at the specified |index|. The new sub-menu</font>
+  <font color="green">// is returned.</font>
+  <font color="green">///</font>
+  <font color="green">/*--cef()--*/</font>
+  virtual CefRefPtr<font color="black">&#60;</font>CefMenuModel<font color="black">&#62;</font> InsertSubMenuAt<font color="black">(</font><font color="blue">int</font> index,
+                                                  <font color="blue">int</font> command_id,
+                                                  <font color="blue">const</font> CefString<font color="black">&</font> label<font color="black">)</font> <font color="black">=</font><font color="maroon">0</font>;
+
+  <font color="green">///</font>
+  <font color="green">// Removes the item with the specified |command_id|. Returns true on success.</font>
+  <font color="green">///</font>
+  <font color="green">/*--cef()--*/</font>
+  virtual <font color="blue">bool</font> Remove<font color="black">(</font><font color="blue">int</font> command_id<font color="black">)</font> <font color="black">=</font><font color="maroon">0</font>;
+
+  <font color="green">///</font>
+  <font color="green">// Removes the item at the specified |index|. Returns true on success.</font>
+  <font color="green">///</font>
+  <font color="green">/*--cef()--*/</font>
+  virtual <font color="blue">bool</font> RemoveAt<font color="black">(</font><font color="blue">int</font> index<font color="black">)</font> <font color="black">=</font><font color="maroon">0</font>;
+
+  <font color="green">///</font>
+  <font color="green">// Returns the index associated with the specified |command_id| or -1 if not</font>
+  <font color="green">// found due to the command id not existing in the menu.</font>
+  <font color="green">///</font>
+  <font color="green">/*--cef()--*/</font>
+  virtual <font color="blue">int</font> GetIndexOf<font color="black">(</font><font color="blue">int</font> command_id<font color="black">)</font> <font color="black">=</font><font color="maroon">0</font>;
+
+  <font color="green">///</font>
+  <font color="green">// Returns the command id at the specified |index| or -1 if not found due to</font>
+  <font color="green">// invalid range or the index being a separator.</font>
+  <font color="green">///</font>
+  <font color="green">/*--cef()--*/</font>
+  virtual <font color="blue">int</font> GetCommandIdAt<font color="black">(</font><font color="blue">int</font> index<font color="black">)</font> <font color="black">=</font><font color="maroon">0</font>;
+
+  <font color="green">///</font>
+  <font color="green">// Sets the command id at the specified |index|. Returns true on success.</font>
+  <font color="green">///</font>
+  <font color="green">/*--cef()--*/</font>
+  virtual <font color="blue">bool</font> SetCommandIdAt<font color="black">(</font><font color="blue">int</font> index, <font color="blue">int</font> command_id<font color="black">)</font> <font color="black">=</font><font color="maroon">0</font>;
+
+  <font color="green">///</font>
+  <font color="green">// Returns the label for the specified |command_id| or empty if not found.</font>
+  <font color="green">///</font>
+  <font color="green">/*--cef()--*/</font>
+  virtual CefString GetLabel<font color="black">(</font><font color="blue">int</font> command_id<font color="black">)</font> <font color="black">=</font><font color="maroon">0</font>;
+
+  <font color="green">///</font>
+  <font color="green">// Returns the label at the specified |index| or empty if not found due to</font>
+  <font color="green">// invalid range or the index being a separator.</font>
+  <font color="green">///</font>
+  <font color="green">/*--cef()--*/</font>
+  virtual CefString GetLabelAt<font color="black">(</font><font color="blue">int</font> index<font color="black">)</font> <font color="black">=</font><font color="maroon">0</font>;
+
+  <font color="green">///</font>
+  <font color="green">// Sets the label for the specified |command_id|. Returns true on success.</font>
+  <font color="green">///</font>
+  <font color="green">/*--cef()--*/</font>
+  virtual <font color="blue">bool</font> SetLabel<font color="black">(</font><font color="blue">int</font> command_id, <font color="blue">const</font> CefString<font color="black">&</font> label<font color="black">)</font> <font color="black">=</font><font color="maroon">0</font>;
+
+  <font color="green">///</font>
+  <font color="green">// Set the label at the specified |index|. Returns true on success.</font>
+  <font color="green">///</font>
+  <font color="green">/*--cef()--*/</font>
+  virtual <font color="blue">bool</font> SetLabelAt<font color="black">(</font><font color="blue">int</font> index, <font color="blue">const</font> CefString<font color="black">&</font> label<font color="black">)</font> <font color="black">=</font><font color="maroon">0</font>;
+
+  <font color="green">///</font>
+  <font color="green">// Returns the item type for the specified |command_id|.</font>
+  <font color="green">///</font>
+  <font color="green">/*--cef(default_retval=MENUITEMTYPE_NONE)--*/</font>
+  virtual MenuItemType GetType<font color="black">(</font><font color="blue">int</font> command_id<font color="black">)</font> <font color="black">=</font><font color="maroon">0</font>;
+
+  <font color="green">///</font>
+  <font color="green">// Returns the item type at the specified |index|.</font>
+  <font color="green">///</font>
+  <font color="green">/*--cef(default_retval=MENUITEMTYPE_NONE)--*/</font>
+  virtual MenuItemType GetTypeAt<font color="black">(</font><font color="blue">int</font> index<font color="black">)</font> <font color="black">=</font><font color="maroon">0</font>;
+
+  <font color="green">///</font>
+  <font color="green">// Returns the group id for the specified |command_id| or -1 if invalid.</font>
+  <font color="green">///</font>
+  <font color="green">/*--cef()--*/</font>
+  virtual <font color="blue">int</font> GetGroupId<font color="black">(</font><font color="blue">int</font> command_id<font color="black">)</font> <font color="black">=</font><font color="maroon">0</font>;
+
+  <font color="green">///</font>
+  <font color="green">// Returns the group id at the specified |index| or -1 if invalid.</font>
+  <font color="green">///</font>
+  <font color="green">/*--cef()--*/</font>
+  virtual <font color="blue">int</font> GetGroupIdAt<font color="black">(</font><font color="blue">int</font> index<font color="black">)</font> <font color="black">=</font><font color="maroon">0</font>;
+
+  <font color="green">///</font>
+  <font color="green">// Sets the group id for the specified |command_id|. Returns true on success.</font>
+  <font color="green">///</font>
+  <font color="green">/*--cef()--*/</font>
+  virtual <font color="blue">bool</font> SetGroupId<font color="black">(</font><font color="blue">int</font> command_id, <font color="blue">int</font> group_id<font color="black">)</font> <font color="black">=</font><font color="maroon">0</font>;
+
+  <font color="green">///</font>
+  <font color="green">// Sets the group id at the specified |index|. Returns true on success.</font>
+  <font color="green">///</font>
+  <font color="green">/*--cef()--*/</font>
+  virtual <font color="blue">bool</font> SetGroupIdAt<font color="black">(</font><font color="blue">int</font> index, <font color="blue">int</font> group_id<font color="black">)</font> <font color="black">=</font><font color="maroon">0</font>;
+
+  <font color="green">///</font>
+  <font color="green">// Returns the submenu for the specified |command_id| or empty if invalid.</font>
+  <font color="green">///</font>
+  <font color="green">/*--cef()--*/</font>
+  virtual CefRefPtr<font color="black">&#60;</font>CefMenuModel<font color="black">&#62;</font> GetSubMenu<font color="black">(</font><font color="blue">int</font> command_id<font color="black">)</font> <font color="black">=</font><font color="maroon">0</font>;
+
+  <font color="green">///</font>
+  <font color="green">// Returns the submenu at the specified |index| or empty if invalid.</font>
+  <font color="green">///</font>
+  <font color="green">/*--cef()--*/</font>
+  virtual CefRefPtr<font color="black">&#60;</font>CefMenuModel<font color="black">&#62;</font> GetSubMenuAt<font color="black">(</font><font color="blue">int</font> index<font color="black">)</font> <font color="black">=</font><font color="maroon">0</font>;
+
+  <font color="green">//</font>
+  <font color="green">// Returns true if the specified |command_id| is visible.</font>
+  <font color="green">///</font>
+  <font color="green">/*--cef()--*/</font>
+  virtual <font color="blue">bool</font> IsVisible<font color="black">(</font><font color="blue">int</font> command_id<font color="black">)</font> <font color="black">=</font><font color="maroon">0</font>;
+
+  <font color="green">//</font>
+  <font color="green">// Returns true if the specified |index| is visible.</font>
+  <font color="green">///</font>
+  <font color="green">/*--cef()--*/</font>
+  virtual <font color="blue">bool</font> IsVisibleAt<font color="black">(</font><font color="blue">int</font> index<font color="black">)</font> <font color="black">=</font><font color="maroon">0</font>;
+
+  <font color="green">//</font>
+  <font color="green">// Change the visibility of the specified |command_id|. Returns true on</font>
+  <font color="green">// success.</font>
+  <font color="green">///</font>
+  <font color="green">/*--cef()--*/</font>
+  virtual <font color="blue">bool</font> SetVisible<font color="black">(</font><font color="blue">int</font> command_id, <font color="blue">bool</font> visible<font color="black">)</font> <font color="black">=</font><font color="maroon">0</font>;
+
+  <font color="green">//</font>
+  <font color="green">// Change the visibility at the specified |index|. Returns true on success.</font>
+  <font color="green">///</font>
+  <font color="green">/*--cef()--*/</font>
+  virtual <font color="blue">bool</font> SetVisibleAt<font color="black">(</font><font color="blue">int</font> index, <font color="blue">bool</font> visible<font color="black">)</font> <font color="black">=</font><font color="maroon">0</font>;
+
+  <font color="green">//</font>
+  <font color="green">// Returns true if the specified |command_id| is enabled.</font>
+  <font color="green">///</font>
+  <font color="green">/*--cef()--*/</font>
+  virtual <font color="blue">bool</font> IsEnabled<font color="black">(</font><font color="blue">int</font> command_id<font color="black">)</font> <font color="black">=</font><font color="maroon">0</font>;
+
+  <font color="green">//</font>
+  <font color="green">// Returns true if the specified |index| is enabled.</font>
+  <font color="green">///</font>
+  <font color="green">/*--cef()--*/</font>
+  virtual <font color="blue">bool</font> IsEnabledAt<font color="black">(</font><font color="blue">int</font> index<font color="black">)</font> <font color="black">=</font><font color="maroon">0</font>;
+
+  <font color="green">//</font>
+  <font color="green">// Change the enabled status of the specified |command_id|. Returns true on</font>
+  <font color="green">// success.</font>
+  <font color="green">///</font>
+  <font color="green">/*--cef()--*/</font>
+  virtual <font color="blue">bool</font> SetEnabled<font color="black">(</font><font color="blue">int</font> command_id, <font color="blue">bool</font> enabled<font color="black">)</font> <font color="black">=</font><font color="maroon">0</font>;
+
+  <font color="green">//</font>
+  <font color="green">// Change the enabled status at the specified |index|. Returns true on</font>
+  <font color="green">// success.</font>
+  <font color="green">///</font>
+  <font color="green">/*--cef()--*/</font>
+  virtual <font color="blue">bool</font> SetEnabledAt<font color="black">(</font><font color="blue">int</font> index, <font color="blue">bool</font> enabled<font color="black">)</font> <font color="black">=</font><font color="maroon">0</font>;
+
+  <font color="green">//</font>
+  <font color="green">// Returns true if the specified |command_id| is checked. Only applies to</font>
+  <font color="green">// check and radio items.</font>
+  <font color="green">///</font>
+  <font color="green">/*--cef()--*/</font>
+  virtual <font color="blue">bool</font> IsChecked<font color="black">(</font><font color="blue">int</font> command_id<font color="black">)</font> <font color="black">=</font><font color="maroon">0</font>;
+
+  <font color="green">//</font>
+  <font color="green">// Returns true if the specified |index| is checked. Only applies to check</font>
+  <font color="green">// and radio items.</font>
+  <font color="green">///</font>
+  <font color="green">/*--cef()--*/</font>
+  virtual <font color="blue">bool</font> IsCheckedAt<font color="black">(</font><font color="blue">int</font> index<font color="black">)</font> <font color="black">=</font><font color="maroon">0</font>;
+
+  <font color="green">//</font>
+  <font color="green">// Check the specified |command_id|. Only applies to check and radio items.</font>
+  <font color="green">// Returns true on success.</font>
+  <font color="green">///</font>
+  <font color="green">/*--cef()--*/</font>
+  virtual <font color="blue">bool</font> SetChecked<font color="black">(</font><font color="blue">int</font> command_id, <font color="blue">bool</font> checked<font color="black">)</font> <font color="black">=</font><font color="maroon">0</font>;
+
+  <font color="green">//</font>
+  <font color="green">// Check the specified |index|. Only applies to check and radio items. Returns</font>
+  <font color="green">// true on success.</font>
+  <font color="green">///</font>
+  <font color="green">/*--cef()--*/</font>
+  virtual <font color="blue">bool</font> SetCheckedAt<font color="black">(</font><font color="blue">int</font> index, <font color="blue">bool</font> checked<font color="black">)</font> <font color="black">=</font><font color="maroon">0</font>;
+
+  <font color="green">//</font>
+  <font color="green">// Returns true if the specified |command_id| has a keyboard accelerator</font>
+  <font color="green">// assigned.</font>
+  <font color="green">///</font>
+  <font color="green">/*--cef()--*/</font>
+  virtual <font color="blue">bool</font> HasAccelerator<font color="black">(</font><font color="blue">int</font> command_id<font color="black">)</font> <font color="black">=</font><font color="maroon">0</font>;
+
+  <font color="green">//</font>
+  <font color="green">// Returns true if the specified |index| has a keyboard accelerator assigned.</font>
+  <font color="green">///</font>
+  <font color="green">/*--cef()--*/</font>
+  virtual <font color="blue">bool</font> HasAcceleratorAt<font color="black">(</font><font color="blue">int</font> index<font color="black">)</font> <font color="black">=</font><font color="maroon">0</font>;
+
+  <font color="green">//</font>
+  <font color="green">// Set the keyboard accelerator for the specified |command_id|. |key_code| can</font>
+  <font color="green">// be any virtual key or character value. Returns true on success.</font>
+  <font color="green">///</font>
+  <font color="green">/*--cef()--*/</font>
+  virtual <font color="blue">bool</font> SetAccelerator<font color="black">(</font><font color="blue">int</font> command_id,
+                              <font color="blue">int</font> key_code,
+                              <font color="blue">bool</font> shift_pressed,
+                              <font color="blue">bool</font> ctrl_pressed,
+                              <font color="blue">bool</font> alt_pressed<font color="black">)</font> <font color="black">=</font><font color="maroon">0</font>;
+
+  <font color="green">//</font>
+  <font color="green">// Set the keyboard accelerator at the specified |index|. |key_code| can be</font>
+  <font color="green">// any virtual key or character value. Returns true on success.</font>
+  <font color="green">///</font>
+  <font color="green">/*--cef()--*/</font>
+  virtual <font color="blue">bool</font> SetAcceleratorAt<font color="black">(</font><font color="blue">int</font> index,
+                                <font color="blue">int</font> key_code,
+                                <font color="blue">bool</font> shift_pressed,
+                                <font color="blue">bool</font> ctrl_pressed,
+                                <font color="blue">bool</font> alt_pressed<font color="black">)</font> <font color="black">=</font><font color="maroon">0</font>;
+
+  <font color="green">//</font>
+  <font color="green">// Remove the keyboard accelerator for the specified |command_id|. Returns</font>
+  <font color="green">// true on success.</font>
+  <font color="green">///</font>
+  <font color="green">/*--cef()--*/</font>
+  virtual <font color="blue">bool</font> RemoveAccelerator<font color="black">(</font><font color="blue">int</font> command_id<font color="black">)</font> <font color="black">=</font><font color="maroon">0</font>;
+
+  <font color="green">//</font>
+  <font color="green">// Remove the keyboard accelerator at the specified |index|. Returns true on</font>
+  <font color="green">// success.</font>
+  <font color="green">///</font>
+  <font color="green">/*--cef()--*/</font>
+  virtual <font color="blue">bool</font> RemoveAcceleratorAt<font color="black">(</font><font color="blue">int</font> index<font color="black">)</font> <font color="black">=</font><font color="maroon">0</font>;
+
+  <font color="green">//</font>
+  <font color="green">// Retrieves the keyboard accelerator for the specified |command_id|. Returns</font>
+  <font color="green">// true on success.</font>
+  <font color="green">///</font>
+  <font color="green">/*--cef()--*/</font>
+  virtual <font color="blue">bool</font> GetAccelerator<font color="black">(</font><font color="blue">int</font> command_id,
+                              <font color="blue">int</font><font color="black">&</font> key_code,
+                              <font color="blue">bool</font><font color="black">&</font> shift_pressed,
+                              <font color="blue">bool</font><font color="black">&</font> ctrl_pressed,
+                              <font color="blue">bool</font><font color="black">&</font> alt_pressed<font color="black">)</font> <font color="black">=</font><font color="maroon">0</font>;
+
+  <font color="green">//</font>
+  <font color="green">// Retrieves the keyboard accelerator for the specified |index|. Returns true</font>
+  <font color="green">// on success.</font>
+  <font color="green">///</font>
+  <font color="green">/*--cef()--*/</font>
+  virtual <font color="blue">bool</font> GetAcceleratorAt<font color="black">(</font><font color="blue">int</font> index,
+                                <font color="blue">int</font><font color="black">&</font> key_code,
+                                <font color="blue">bool</font><font color="black">&</font> shift_pressed,
+                                <font color="blue">bool</font><font color="black">&</font> ctrl_pressed,
+                                <font color="blue">bool</font><font color="black">&</font> alt_pressed<font color="black">)</font> <font color="black">=</font><font color="maroon">0</font>;
+<font color="black">}</font>;
+
+<font color="blue">#endif</font>  <font color="green">// CEF_INCLUDE_CEF_MENU_MODEL_H_</font>
+
+</PRE>
+</BODY>
+</HTML>

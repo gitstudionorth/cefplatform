@@ -1,0 +1,5 @@
+_ReSharper.cefclient2010
+*.suo
+*.user
+/Release
+/Debug
