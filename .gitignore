@@ -3,3 +3,7 @@ _ReSharper.cefclient2010
 *.user
 /Release
 /Debug
+/*.sdf
+/*.opensdf
+/*.log
+/ipch
