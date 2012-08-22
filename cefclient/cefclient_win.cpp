@@ -197,9 +197,8 @@ static void ModifyZoom(CefRefPtr<CefBrowser> browser, double delta) {
 //
 LRESULT CALLBACK WndProc(HWND hWnd, UINT message, WPARAM wParam,
                          LPARAM lParam) {
-  static HWND backWnd = NULL, forwardWnd = NULL, reloadWnd = NULL,
-      stopWnd = NULL, editWnd = NULL;
-  static WNDPROC editWndOldProc = NULL;
+  // static HWND backWnd = NULL, forwardWnd = NULL, reloadWnd = NULL, stopWnd = NULL, editWnd = NULL;
+  // static WNDPROC editWndOldProc = NULL;
 
   // Static members used for the find dialog.
   static FINDREPLACE fr;
@@ -212,28 +211,7 @@ LRESULT CALLBACK WndProc(HWND hWnd, UINT message, WPARAM wParam,
   PAINTSTRUCT ps;
   HDC hdc;
 
-  if (hWnd == editWnd) {
-    // Callback for the edit window
-    switch (message) {
-    case WM_CHAR:
-      if (wParam == VK_RETURN && g_handler.get()) {
-        // When the user hits the enter key load the URL
-        CefRefPtr<CefBrowser> browser = g_handler->GetBrowser();
-        wchar_t strPtr[MAX_URL_LENGTH+1] = {0};
-        *((LPWORD)strPtr) = MAX_URL_LENGTH;
-        LRESULT strLen = SendMessage(hWnd, EM_GETLINE, 0, (LPARAM)strPtr);
-        if (strLen > 0) {
-          strPtr[strLen] = 0;
-          browser->GetMainFrame()->LoadURL(strPtr);
-        }
-
-        return 0;
-      }
-    }
-
-    return (LRESULT)CallWindowProc(editWndOldProc, hWnd, message, wParam,
-                                   lParam);
-  } else {
+    
     // Callback for the main window
     switch (message) {
     case WM_CREATE: {
@@ -246,49 +224,6 @@ LRESULT CALLBACK WndProc(HWND hWnd, UINT message, WPARAM wParam,
       int x = 0;
 
       GetClientRect(hWnd, &rect);
-
-      backWnd = CreateWindow(L"BUTTON", L"Back",
-                              WS_CHILD | WS_VISIBLE | BS_PUSHBUTTON
-                              | WS_DISABLED, x, 0, BUTTON_WIDTH, URLBAR_HEIGHT,
-                              hWnd, (HMENU) IDC_NAV_BACK, hInst, 0);
-      x += BUTTON_WIDTH;
-
-      forwardWnd = CreateWindow(L"BUTTON", L"Forward",
-                                WS_CHILD | WS_VISIBLE | BS_PUSHBUTTON
-                                | WS_DISABLED, x, 0, BUTTON_WIDTH,
-                                URLBAR_HEIGHT, hWnd, (HMENU) IDC_NAV_FORWARD,
-                                hInst, 0);
-      x += BUTTON_WIDTH;
-
-      reloadWnd = CreateWindow(L"BUTTON", L"Reload",
-                                WS_CHILD | WS_VISIBLE | BS_PUSHBUTTON
-                                | WS_DISABLED, x, 0, BUTTON_WIDTH,
-                                URLBAR_HEIGHT, hWnd, (HMENU) IDC_NAV_RELOAD,
-                                hInst, 0);
-      x += BUTTON_WIDTH;
-
-      stopWnd = CreateWindow(L"BUTTON", L"Stop",
-                              WS_CHILD | WS_VISIBLE | BS_PUSHBUTTON
-                              | WS_DISABLED, x, 0, BUTTON_WIDTH, URLBAR_HEIGHT,
-                              hWnd, (HMENU) IDC_NAV_STOP, hInst, 0);
-      x += BUTTON_WIDTH;
-
-      editWnd = CreateWindow(L"EDIT", 0,
-                              WS_CHILD | WS_VISIBLE | WS_BORDER | ES_LEFT |
-                              ES_AUTOVSCROLL | ES_AUTOHSCROLL| WS_DISABLED,
-                              x, 0, rect.right - BUTTON_WIDTH * 4,
-                              URLBAR_HEIGHT, hWnd, 0, hInst, 0);
-
-      // Assign the edit window's WNDPROC to this function so that we can
-      // capture the enter key
-      editWndOldProc =
-          reinterpret_cast<WNDPROC>(GetWindowLongPtr(editWnd, GWLP_WNDPROC));
-      SetWindowLongPtr(editWnd, GWLP_WNDPROC,
-          reinterpret_cast<LONG_PTR>(WndProc));
-      g_handler->SetEditHwnd(editWnd);
-      g_handler->SetButtonHwnds(backWnd, forwardWnd, reloadWnd, stopWnd);
-
-      rect.top += URLBAR_HEIGHT;
 
       CefWindowInfo info;
       CefBrowserSettings settings;
@@ -347,90 +282,7 @@ LRESULT CALLBACK WndProc(HWND hWnd, UINT message, WPARAM wParam,
               MB_OK | MB_ICONINFORMATION);
         }
         return 0;
-      case IDC_NAV_BACK:   // Back button
-        if (browser.get())
-          browser->GoBack();
-        return 0;
-      case IDC_NAV_FORWARD:  // Forward button
-        if (browser.get())
-          browser->GoForward();
-        return 0;
-      case IDC_NAV_RELOAD:  // Reload button
-        if (browser.get())
-          browser->Reload();
-        return 0;
-      case IDC_NAV_STOP:  // Stop button
-        if (browser.get())
-          browser->StopLoad();
-        return 0;
-      case ID_TESTS_GETSOURCE:  // Test the GetSource function
-        if (browser.get())
-          RunGetSourceTest(browser);
-        return 0;
-      case ID_TESTS_GETTEXT:  // Test the GetText function
-        if (browser.get())
-          RunGetTextTest(browser);
-        return 0;
-      case ID_TESTS_POPUP:  // Test a popup window
-        if (browser.get())
-          RunPopupTest(browser);
-        return 0;
-      case ID_TESTS_REQUEST:  // Test a request
-        if (browser.get())
-          RunRequestTest(browser);
-        return 0;
-      case ID_TESTS_SCHEME_HANDLER:  // Test the scheme handler
-        if (browser.get())
-          scheme_test::RunTest(browser);
-        return 0;
-      case ID_TESTS_BINDING:  // Test JavaScript binding
-        if (browser.get())
-          binding_test::RunTest(browser);
-        return 0;
-      case ID_TESTS_DIALOGS:  // Test JavaScript dialogs
-        if (browser.get())
-          RunDialogTest(browser);
-        return 0;
-      case ID_TESTS_PLUGIN_INFO:  // Test plugin info
-        if (browser.get())
-          RunPluginInfoTest(browser);
-        return 0;
-      case ID_TESTS_DOM_ACCESS:  // Test DOM access
-        if (browser.get())
-          dom_test::RunTest(browser);
-        return 0;
-      case ID_TESTS_LOCALSTORAGE:  // Test localStorage
-        if (browser.get())
-          RunLocalStorageTest(browser);
-        return 0;
-      case ID_TESTS_ACCELERATED2DCANVAS:  // Test accelerated 2d canvas
-        if (browser.get())
-          RunAccelerated2DCanvasTest(browser);
-        return 0;
-      case ID_TESTS_ACCELERATEDLAYERS:  // Test accelerated layers
-        if (browser.get())
-          RunAcceleratedLayersTest(browser);
-        return 0;
-      case ID_TESTS_WEBGL:  // Test WebGL
-        if (browser.get())
-          RunWebGLTest(browser);
-        return 0;
-      case ID_TESTS_HTML5VIDEO:  // Test HTML5 video
-        if (browser.get())
-          RunHTML5VideoTest(browser);
-        return 0;
-      case ID_TESTS_XMLHTTPREQUEST:  // Test XMLHttpRequest
-        if (browser.get())
-          RunXMLHTTPRequestTest(browser);
-        return 0;
-      case ID_TESTS_DRAGDROP:  // Test drag & drop
-        if (browser.get())
-          RunDragDropTest(browser);
-        return 0;
-      case ID_TESTS_GEOLOCATION:  // Test geolocation
-        if (browser.get())
-          RunGeolocationTest(browser);
-        return 0;
+
       case ID_TESTS_ZOOM_IN:
         if (browser.get())
           ModifyZoom(browser, 0.5);
@@ -474,13 +326,10 @@ LRESULT CALLBACK WndProc(HWND hWnd, UINT message, WPARAM wParam,
           // window size
           RECT rect;
           GetClientRect(hWnd, &rect);
-          rect.top += URLBAR_HEIGHT;
-
-          int urloffset = rect.left + BUTTON_WIDTH * 4;
 
           HDWP hdwp = BeginDeferWindowPos(1);
-          hdwp = DeferWindowPos(hdwp, editWnd, NULL, urloffset,
-            0, rect.right - urloffset, URLBAR_HEIGHT, SWP_NOZORDER);
+          hdwp = DeferWindowPos(hdwp, hwnd, NULL, 0,
+            0, rect.right, URLBAR_HEIGHT, SWP_NOZORDER);
           hdwp = DeferWindowPos(hdwp, hwnd, NULL,
             rect.left, rect.top, rect.right - rect.left, rect.bottom - rect.top,
             SWP_NOZORDER);
@@ -518,7 +367,6 @@ LRESULT CALLBACK WndProc(HWND hWnd, UINT message, WPARAM wParam,
     }
 
     return DefWindowProc(hWnd, message, wParam, lParam);
-  }
 }
 
 // Message handler for about box.

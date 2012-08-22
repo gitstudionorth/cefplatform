@@ -55,16 +55,9 @@ void ClientHandler::SendNotification(NotificationType type) {
 }
 
 void ClientHandler::SetLoading(bool isLoading) {
-  ASSERT(m_EditHwnd != NULL && m_ReloadHwnd != NULL && m_StopHwnd != NULL);
-  EnableWindow(m_EditHwnd, TRUE);
-  EnableWindow(m_ReloadHwnd, !isLoading);
-  EnableWindow(m_StopHwnd, isLoading);
 }
 
 void ClientHandler::SetNavState(bool canGoBack, bool canGoForward) {
-  ASSERT(m_BackHwnd != NULL && m_ForwardHwnd != NULL);
-  EnableWindow(m_BackHwnd, canGoBack);
-  EnableWindow(m_ForwardHwnd, canGoForward);
 }
 
 void ClientHandler::CloseMainWindow() {
