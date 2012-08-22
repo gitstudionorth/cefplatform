@@ -341,15 +341,12 @@
     <ClInclude Include="include\wrapper\cef_xml_object.h" />
     <ClInclude Include="include\wrapper\cef_zip_archive.h" />
     <ClInclude Include="include\wrapper\cef_stream_resource_handler.h" />
-    <ClInclude Include="cefclient\binding_test.h" />
     <ClInclude Include="cefclient\cefclient.h" />
     <ClInclude Include="cefclient\string_util.h" />
     <ClInclude Include="cefclient\resource.h" />
     <ClInclude Include="cefclient\client_handler.h" />
     <ClInclude Include="cefclient\client_switches.h" />
-    <ClInclude Include="cefclient\dom_test.h" />
     <ClInclude Include="cefclient\util.h" />
-    <ClInclude Include="cefclient\scheme_test.h" />
     <ClInclude Include="cefclient\client_app.h" />
     <ClInclude Include="cefclient\client_renderer.h" />
     <ClInclude Include="cefclient\resource_util.h" />
@@ -361,13 +358,10 @@
     <ClCompile Include="cefclient\client_handler.cpp" />
     <ClCompile Include="cefclient\cefclient.cpp" />
     <ClCompile Include="cefclient\client_app_delegates.cpp" />
-    <ClCompile Include="cefclient\dom_test.cpp" />
     <ClCompile Include="cefclient\client_renderer.cpp" />
-    <ClCompile Include="cefclient\scheme_test.cpp" />
     <ClCompile Include="cefclient\resource_util_win.cpp" />
     <ClCompile Include="cefclient\client_handler_win.cpp" />
     <ClCompile Include="cefclient\client_app.cpp" />
-    <ClCompile Include="cefclient\binding_test.cpp" />
   </ItemGroup>
   <ItemGroup>
     <ResourceCompile Include="cefclient\cefclient.rc" />

@@ -217,9 +217,6 @@
     <ClInclude Include="include\wrapper\cef_stream_resource_handler.h">
       <Filter>include\wrapper</Filter>
     </ClInclude>
-    <ClInclude Include="cefclient\binding_test.h">
-      <Filter>cefclient</Filter>
-    </ClInclude>
     <ClInclude Include="cefclient\cefclient.h">
       <Filter>cefclient</Filter>
     </ClInclude>
@@ -236,9 +233,6 @@
       <Filter>cefclient</Filter>
     </ClInclude>
     <ClInclude Include="cefclient\client_switches.h">
-      <Filter>cefclient</Filter>
-    </ClInclude>
-    <ClInclude Include="cefclient\dom_test.h">
       <Filter>cefclient</Filter>
     </ClInclude>
     <ClInclude Include="cefclient\util.h">
@@ -259,19 +253,10 @@
     <ClCompile Include="cefclient\cefclient.cpp">
       <Filter>cefclient</Filter>
     </ClCompile>
-    <ClInclude Include="cefclient\scheme_test.h">
-      <Filter>cefclient</Filter>
-    </ClInclude>
     <ClCompile Include="cefclient\client_app_delegates.cpp">
       <Filter>cefclient</Filter>
     </ClCompile>
-    <ClCompile Include="cefclient\dom_test.cpp">
-      <Filter>cefclient</Filter>
-    </ClCompile>
     <ClCompile Include="cefclient\client_renderer.cpp">
-      <Filter>cefclient</Filter>
-    </ClCompile>
-    <ClCompile Include="cefclient\scheme_test.cpp">
       <Filter>cefclient</Filter>
     </ClCompile>
     <ClInclude Include="cefclient\client_app.h">
@@ -292,9 +277,6 @@
     <ClInclude Include="cefclient\resource_util.h">
       <Filter>cefclient</Filter>
     </ClInclude>
-    <ClCompile Include="cefclient\binding_test.cpp">
-      <Filter>cefclient</Filter>
-    </ClCompile>
     <None Include="cefclient\res\cefclient.ico">
       <Filter>cefclient\res</Filter>
     </None>

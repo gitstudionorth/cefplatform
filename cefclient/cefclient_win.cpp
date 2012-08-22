@@ -13,11 +13,8 @@
 #include "include/cef_browser.h"
 #include "include/cef_frame.h"
 #include "include/cef_runnable.h"
-#include "cefclient/binding_test.h"
 #include "cefclient/client_handler.h"
-#include "cefclient/dom_test.h"
 #include "cefclient/resource.h"
-#include "cefclient/scheme_test.h"
 #include "cefclient/string_util.h"
 
 #define MAX_LOADSTRING 100
@@ -76,9 +73,6 @@ int APIENTRY wWinMain(HINSTANCE hInstance,
 
   // Initialize CEF.
   CefInitialize(main_args, settings, app.get());
-
-  // Register the scheme handler.
-  scheme_test::InitTest();
 
   HACCEL hAccelTable;
 

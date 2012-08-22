@@ -13,11 +13,9 @@
 #include "include/cef_process_util.h"
 #include "include/cef_runnable.h"
 #include "include/wrapper/cef_stream_resource_handler.h"
-#include "cefclient/binding_test.h"
 #include "cefclient/cefclient.h"
 #include "cefclient/client_renderer.h"
 #include "cefclient/client_switches.h"
-#include "cefclient/dom_test.h"
 #include "cefclient/resource_util.h"
 #include "cefclient/string_util.h"
 
@@ -241,9 +239,6 @@ void ClientHandler::OnLoadEnd(CefRefPtr<CefBrowser> browser,
     // We've just finished loading a page
     SetLoading(false);
 
-    // Continue the DOM test.
-    if (frame->GetURL() == dom_test::kTestUrl)
-      dom_test::OnLoadEnd(browser);
   }
 }
 
@@ -351,11 +346,9 @@ std::string ClientHandler::GetLastDownloadFile() {
 void ClientHandler::CreateProcessMessageDelegates(
       ProcessMessageDelegateSet& delegates) {
   // Create the binding test delegates.
-  binding_test::CreateProcessMessageDelegates(delegates);
 }
 
 // static
 void ClientHandler::CreateRequestDelegates(RequestDelegateSet& delegates) {
   // Create the binding test delegates.
-  binding_test::CreateRequestDelegates(delegates);
 }
