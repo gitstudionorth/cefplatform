@@ -280,28 +280,13 @@
     <None Include="cefclient\res\cefclient.ico">
       <Filter>cefclient\res</Filter>
     </None>
-    <None Include="cefclient\res\domaccess.html">
-      <Filter>cefclient\res</Filter>
-    </None>
-    <None Include="cefclient\res\binding.html">
-      <Filter>cefclient\res</Filter>
-    </None>
     <None Include="cefclient\res\logo.png">
       <Filter>cefclient\res</Filter>
     </None>
     <None Include="cefclient\res\logoball.png">
       <Filter>cefclient\res</Filter>
     </None>
-    <None Include="cefclient\res\localstorage.html">
-      <Filter>cefclient\res</Filter>
-    </None>
-    <None Include="cefclient\res\xmlhttprequest.html">
-      <Filter>cefclient\res</Filter>
-    </None>
     <None Include="cefclient\res\small.ico">
-      <Filter>cefclient\res</Filter>
-    </None>
-    <None Include="cefclient\res\dialogs.html">
       <Filter>cefclient\res</Filter>
     </None>
     <None Include="cefclient\res\sessions.html">

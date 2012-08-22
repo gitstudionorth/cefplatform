@@ -264,15 +264,10 @@
   <ItemGroup>
     <None Include="cefclient.gyp" />
     <None Include="cefclient\res\cefclient.ico" />
-    <None Include="cefclient\res\domaccess.html" />
-    <None Include="cefclient\res\binding.html" />
     <None Include="cefclient\res\logo.png" />
     <None Include="cefclient\res\logoball.png" />
-    <None Include="cefclient\res\localstorage.html" />
     <None Include="cefclient\res\sessions.html" />
-    <None Include="cefclient\res\xmlhttprequest.html" />
     <None Include="cefclient\res\small.ico" />
-    <None Include="cefclient\res\dialogs.html" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="include\cef_download_handler.h" />
