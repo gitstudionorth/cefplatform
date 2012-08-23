@@ -311,19 +311,18 @@ LRESULT CALLBACK WndProc(HWND hWnd, UINT message, WPARAM wParam,
     case WM_SIZE:
       // Minimizing resizes the window to 0x0 which causes our layout to go all
       // screwy, so we just ignore it.
-      if (wParam != SIZE_MINIMIZED && g_handler.get() &&
-          g_handler->GetBrowser()) {
-        CefWindowHandle hwnd =
-            g_handler->GetBrowser()->GetHost()->GetWindowHandle();
+      if (wParam != SIZE_MINIMIZED && g_handler.get() && g_handler->GetBrowser()) {
+        CefWindowHandle hwnd = g_handler->GetBrowser()->GetHost()->GetWindowHandle();
         if (hwnd) {
           // Resize the browser window and address bar to match the new frame
           // window size
           RECT rect;
           GetClientRect(hWnd, &rect);
 
+          int urloffset = rect.left + BUTTON_WIDTH * 4;
+
           HDWP hdwp = BeginDeferWindowPos(1);
-          hdwp = DeferWindowPos(hdwp, hwnd, NULL, 0,
-            0, rect.right, URLBAR_HEIGHT, SWP_NOZORDER);
+          
           hdwp = DeferWindowPos(hdwp, hwnd, NULL,
             rect.left, rect.top, rect.right - rect.left, rect.bottom - rect.top,
             SWP_NOZORDER);

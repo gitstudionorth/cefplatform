@@ -17,3 +17,13 @@ _ReSharper.cefclient2010
 /Debug/*.pdb
 /Debug/*.log
 /Debug/cefclient.exe
+/Debug/QuotaManager
+/Debug/QuotaManager-journal
+/QuotaManager
+/QuotaManager-journal
+/Release/QuotaManager
+/Release/QuotaManager-journal
+/databases
+/Release/databases
+/Debug/databases
+/cefclient\res/sessions.html
