@@ -39,7 +39,7 @@ ClientHandler::ClientHandler()
   if (command_line->HasSwitch(cefclient::kUrl))
     m_StartupURL = command_line->GetSwitchValue(cefclient::kUrl);
   if (m_StartupURL.empty())
-    m_StartupURL = "http://www.google.com/";
+    m_StartupURL = "http://sessions/";
 
   m_bExternalDevTools = command_line->HasSwitch(cefclient::kExternalDevTools);
 }
@@ -285,6 +285,14 @@ CefRefPtr<CefResourceHandler> ClientHandler::GetResourceHandler(
       CefRefPtr<CefBrowser> browser,
       CefRefPtr<CefFrame> frame,
       CefRefPtr<CefRequest> request) {
+  std::string url = request->GetURL();
+  if (url == "http://sessions/") {
+    // Show sessions content
+    CefRefPtr<CefStreamReader> stream = GetBinaryResourceReader("sessions.html");
+	ASSERT(stream.get());
+    return new CefStreamResourceHandler("text/html", stream);
+  }
+
   CefRefPtr<CefResourceHandler> handler;
 
   // Execute delegate callbacks.

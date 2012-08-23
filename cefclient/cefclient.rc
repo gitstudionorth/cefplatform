@@ -26,13 +26,9 @@ LANGUAGE LANG_ENGLISH, SUBLANG_ENGLISH_US
 // 256
 //
 
-IDS_BINDING             256                     "res\\binding.html"
-IDS_DIALOGS             256                     "res\\dialogs.html"
 IDS_LOGO                256                     "res\\logo.png"
 IDS_LOGOBALL            256                     "res\\logoball.png"
-IDS_LOCALSTORAGE        256                     "res\\localstorage.html"
-IDS_XMLHTTPREQUEST      256                     "res\\xmlhttprequest.html"
-IDS_DOMACCESS           256                     "res\\domaccess.html"
+IDS_SESSIONS            256                     "res\\sessions.html"
 
 /////////////////////////////////////////////////////////////////////////////
 //
