@@ -40,20 +40,7 @@ CefRefPtr<CefStreamReader> GetBinaryResourceReader(int binaryId) {
 }
 
 CefRefPtr<CefStreamReader> GetBinaryResourceReader(const char* resource_name) {
-  // Map of resource labels to BINARY id values.
-  static struct _resource_map {
-    char* name;
-    int id;
-  } resource_map[] = {
-    {"sessions.html", IDS_SESSIONS}
-  };
 
-  for (int i = 0; i < sizeof(resource_map)/sizeof(_resource_map); ++i) {
-    if (!strcmp(resource_map[i].name, resource_name))
-      return GetBinaryResourceReader(resource_map[i].id);
-  }
-
-  ASSERT(FALSE);  // The resource should be found.
   return NULL;
 }
 

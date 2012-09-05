@@ -5,7 +5,9 @@
 #include "cefclient/client_handler.h"
 #include <algorithm>
 #include <stdio.h>
+#include <direct.h>
 #include <sstream>
+#include <fstream>
 #include <string>
 #include "include/cef_browser.h"
 #include "include/cef_frame.h"
@@ -281,24 +283,40 @@ void ClientHandler::OnRenderProcessTerminated(CefRefPtr<CefBrowser> browser,
     frame->LoadURL(startupURL);
 }
 
-CefRefPtr<CefResourceHandler> ClientHandler::GetResourceHandler(
-      CefRefPtr<CefBrowser> browser,
-      CefRefPtr<CefFrame> frame,
-      CefRefPtr<CefRequest> request) {
+CefRefPtr<CefResourceHandler> ClientHandler::GetResourceHandler(CefRefPtr<CefBrowser> browser, CefRefPtr<CefFrame> frame, CefRefPtr<CefRequest> request) {
   std::string url = request->GetURL();
+
   if (url == "http://sessions/") {
-    // Show sessions content
-    CefRefPtr<CefStreamReader> stream = GetBinaryResourceReader("sessions.html");
-	ASSERT(stream.get());
-    return new CefStreamResourceHandler("text/html", stream);
+    char szWorkingDir[MAX_PATH];  // The current working directory
+    // Retrieve the current working directory.
+    if (_getcwd(szWorkingDir, MAX_PATH) == NULL)
+        szWorkingDir[0] = 0;
+
+    std::string path;
+
+    path.append(szWorkingDir);
+    path.append("\\sessions.html");
+
+    CefRefPtr<CefStreamReader> stream = CefStreamReader::CreateForFile(path.c_str());
+    ASSERT(stream.get());  
+
+    // read all of the stream data into a std::string.
+    std::stringstream ss;
+    char buff[100];
+    size_t read;
+    do {
+        read = stream->Read(buff, sizeof(char), 100-1);
+        if(read > 0) {
+            buff[read] = 0;
+            ss << buff;
+        }
+    }
+    while(read > 0);
+
+    browser->GetMainFrame()->LoadStringW(ss.str().insert(66, "var jsondata = {'key' : 'value'};"), "http://sessions/");
   }
 
   CefRefPtr<CefResourceHandler> handler;
-
-  // Execute delegate callbacks.
-  RequestDelegateSet::iterator it = request_delegates_.begin();
-  for (; it != request_delegates_.end() && !handler.get(); ++it)
-    handler = (*it)->GetResourceHandler(this, browser, frame, request);
 
   return handler;
 }

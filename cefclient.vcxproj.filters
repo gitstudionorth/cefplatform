@@ -289,8 +289,22 @@
     <None Include="cefclient\res\small.ico">
       <Filter>cefclient\res</Filter>
     </None>
-    <None Include="cefclient\res\sessions.html">
-      <Filter>cefclient\res</Filter>
-    </None>
+    <None Include="sessions.html" />
+  </ItemGroup>
+  <ItemGroup>
+    <ClCompile Include="cefclient\shell.c">
+      <Filter>cefclient</Filter>
+    </ClCompile>
+    <ClCompile Include="cefclient\sqlite3.c">
+      <Filter>cefclient</Filter>
+    </ClCompile>
+  </ItemGroup>
+  <ItemGroup>
+    <ClInclude Include="cefclient\sqlite3.h">
+      <Filter>cefclient</Filter>
+    </ClInclude>
+    <ClInclude Include="cefclient\sqlite3ext.h">
+      <Filter>cefclient</Filter>
+    </ClInclude>
   </ItemGroup>
 </Project>

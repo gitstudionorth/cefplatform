@@ -27,3 +27,4 @@ _ReSharper.cefclient2010
 /Release/databases
 /Debug/databases
 /cefclient\res/sessions.html
+/Release/sessions.html

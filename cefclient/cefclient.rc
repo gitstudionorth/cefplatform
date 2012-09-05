@@ -28,7 +28,6 @@ LANGUAGE LANG_ENGLISH, SUBLANG_ENGLISH_US
 
 IDS_LOGO                256                     "res\\logo.png"
 IDS_LOGOBALL            256                     "res\\logoball.png"
-IDS_SESSIONS            256                     "res\\sessions.html"
 
 /////////////////////////////////////////////////////////////////////////////
 //
