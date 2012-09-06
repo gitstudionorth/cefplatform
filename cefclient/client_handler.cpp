@@ -20,6 +20,7 @@
 #include "cefclient/client_switches.h"
 #include "cefclient/resource_util.h"
 #include "cefclient/string_util.h"
+#include "sqlite3.h"
 
 
 ClientHandler::ClientHandler()
@@ -283,10 +284,26 @@ void ClientHandler::OnRenderProcessTerminated(CefRefPtr<CefBrowser> browser,
     frame->LoadURL(startupURL);
 }
 
-CefRefPtr<CefResourceHandler> ClientHandler::GetResourceHandler(CefRefPtr<CefBrowser> browser, CefRefPtr<CefFrame> frame, CefRefPtr<CefRequest> request) {
-  std::string url = request->GetURL();
+std::string sessions;
+static int callback(void *NotUsed, int argc, char **argv, char **azColName){
+    int i;
+    sessions.append("{");
+    for(i=0; i<argc; i++) {        
+        sessions.append("'");
+        sessions.append(azColName[i]);
+        sessions.append("'");
+        sessions.append(": ");
+        sessions.append("'");
+        sessions.append(argv[i]);
+        sessions.append("',");
+    }
+    sessions.append("},");
 
-  if (url == "http://sessions/") {
+    return 0;
+}
+
+CefRefPtr<CefResourceHandler> ClientHandler::GetResourceHandler(CefRefPtr<CefBrowser> browser, CefRefPtr<CefFrame> frame, CefRefPtr<CefRequest> request) {
+
     char szWorkingDir[MAX_PATH];  // The current working directory
     // Retrieve the current working directory.
     if (_getcwd(szWorkingDir, MAX_PATH) == NULL)
@@ -313,12 +330,74 @@ CefRefPtr<CefResourceHandler> ClientHandler::GetResourceHandler(CefRefPtr<CefBro
     }
     while(read > 0);
 
-    browser->GetMainFrame()->LoadStringW(ss.str().insert(66, "var jsondata = {'key' : 'value'};"), "http://sessions/");
+    sqlite3 *db; // sqlite3 db struct
+    char *zErrMsg = 0;
+    char *szSQL;
+    int rc;
+
+    // Open the test.db file
+    rc = sqlite3_open("test_sqlite.sqlite", &db);
+
+    if( rc ) {
+        // failed
+        // fprintf(stderr, "Can't open database: %s\n", sqlite3_errmsg(db));
+    } else {
+        // success
+        // fprintf(stderr, "Open database successfully\n");
+    }
+
+    // create myTable
+    // szSQL = "create table myTable (FirstName varchar(30), LastName varchar(30), Age smallint not null)";
+
+    // rc = sqlite3_exec(db, szSQL, callback, 0, &zErrMsg);
+
+    if( rc == SQLITE_OK ) {
+        sessions = "var jsondata = { 'sessions': [";
+        // insert 1 record into myTable
+        // RunInsertParamSQL(db, "askyb", "com", 10);
+
+        // fetch records
+        szSQL = "select * from test_table";
+        rc = sqlite3_exec(db, szSQL, callback, 0, &zErrMsg);
+
+        sessions.append("]};");
+    }
+
+    // Close test.db file
+    sqlite3_close(db);
+
+    browser->GetMainFrame()->LoadStringW(ss.str().insert(66, sessions), "http://sessions/");
+
+    CefRefPtr<CefResourceHandler> handler;
+
+    return handler;
+}
+
+// Insert record
+void RunInsertParamSQL(sqlite3 *db, char *fn, char *ln, int age) {
+  if (!db)
+    return;
+
+  char *zErrMsg = 0;
+  sqlite3_stmt *stmt;
+  const char *pzTest;
+  char *szSQL;
+
+  // Insert data item into myTable
+  szSQL = "insert into myTable (FirstName, LastName, Age) values (?,?,?)";
+
+  int rc = sqlite3_prepare(db, szSQL, strlen(szSQL), &stmt, &pzTest);
+
+  if( rc == SQLITE_OK ) {
+    // bind the value 
+    sqlite3_bind_text(stmt, 1, fn, strlen(fn), 0);
+    sqlite3_bind_text(stmt, 2, ln, strlen(ln), 0);
+    sqlite3_bind_int(stmt, 3, age);
+
+    // commit 
+    sqlite3_step(stmt);
+    sqlite3_finalize(stmt);
   }
-
-  CefRefPtr<CefResourceHandler> handler;
-
-  return handler;
 }
 
 void ClientHandler::OnProtocolExecution(CefRefPtr<CefBrowser> browser,
