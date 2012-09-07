@@ -335,8 +335,8 @@ CefRefPtr<CefResourceHandler> ClientHandler::GetResourceHandler(CefRefPtr<CefBro
     char *szSQL;
     int rc;
 
-    // Open the test.db file
-    rc = sqlite3_open("test_sqlite.sqlite", &db);
+    // Open db
+    rc = sqlite3_open("precedex_calc.sqlite", &db);
 
     if( rc ) {
         // failed
@@ -352,21 +352,23 @@ CefRefPtr<CefResourceHandler> ClientHandler::GetResourceHandler(CefRefPtr<CefBro
     // rc = sqlite3_exec(db, szSQL, callback, 0, &zErrMsg);
 
     if( rc == SQLITE_OK ) {
-        sessions = "var jsondata = { 'sessions': [";
         // insert 1 record into myTable
         // RunInsertParamSQL(db, "askyb", "com", 10);
 
         // fetch records
-        szSQL = "select * from test_table";
+        szSQL = "select * from sessions";
         rc = sqlite3_exec(db, szSQL, callback, 0, &zErrMsg);
-
-        sessions.append("]};");
     }
 
     // Close test.db file
     sqlite3_close(db);
 
-    browser->GetMainFrame()->LoadStringW(ss.str().insert(66, sessions), "http://sessions/");
+    std::string sessiondata = ss.str();
+    std::string placeholder = "'placeholder'";
+    
+    sessiondata.replace(sessiondata.find(placeholder), placeholder.length(), sessions);
+
+    browser->GetMainFrame()->LoadStringW(sessiondata, "http://sessions/");
 
     CefRefPtr<CefResourceHandler> handler;
 
