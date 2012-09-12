@@ -4,6 +4,7 @@
 
 #include "cefclient/client_app.h"
 #include "cefclient/client_renderer.h"
+#include "cefclient/SessionSaveListener.h"
 
 // static
 void ClientApp::CreateRenderDelegates(RenderDelegateSet& delegates) {

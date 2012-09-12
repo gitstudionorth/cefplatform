@@ -319,8 +319,6 @@ LRESULT CALLBACK WndProc(HWND hWnd, UINT message, WPARAM wParam,
           RECT rect;
           GetClientRect(hWnd, &rect);
 
-          int urloffset = rect.left + BUTTON_WIDTH * 4;
-
           HDWP hdwp = BeginDeferWindowPos(1);
           
           hdwp = DeferWindowPos(hdwp, hwnd, NULL,
