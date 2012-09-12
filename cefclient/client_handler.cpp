@@ -21,6 +21,7 @@
 #include "cefclient/resource_util.h"
 #include "cefclient/string_util.h"
 #include "sqlite3.h"
+#include "SessionSaveListener.h"
 
 
 ClientHandler::ClientHandler()
@@ -241,7 +242,6 @@ void ClientHandler::OnLoadEnd(CefRefPtr<CefBrowser> browser,
   if (m_BrowserId == browser->GetIdentifier() && frame->IsMain()) {
     // We've just finished loading a page
     SetLoading(false);
-
   }
 }
 
@@ -371,6 +371,11 @@ CefRefPtr<CefResourceHandler> ClientHandler::GetResourceHandler(CefRefPtr<CefBro
     browser->GetMainFrame()->LoadStringW(sessiondata, "http://sessions/");
 
     CefRefPtr<CefResourceHandler> handler;
+    // Execute delegate callbacks.
+    RequestDelegateSet::iterator it = request_delegates_.begin();
+
+    for (; it != request_delegates_.end() && !handler.get(); ++it)
+        handler = (*it)->GetResourceHandler(this, browser, frame, request);
 
     return handler;
 }
@@ -452,7 +457,8 @@ std::string ClientHandler::GetLastDownloadFile() {
 // static
 void ClientHandler::CreateProcessMessageDelegates(
       ProcessMessageDelegateSet& delegates) {
-  // Create the binding test delegates.
+    // Create the binding test delegates.
+    binding_test::CreateProcessMessageDelegates(delegates);
 }
 
 // static

@@ -61,7 +61,7 @@
       <RuntimeLibrary>MultiThreadedDebug</RuntimeLibrary>
       <RuntimeTypeInfo>false</RuntimeTypeInfo>
       <TreatWarningAsError>true</TreatWarningAsError>
-      <WarningLevel>Level4</WarningLevel>
+      <WarningLevel>Level3</WarningLevel>
     </ClCompile>
     <Lib>
       <AdditionalLibraryDirectories>../../../third_party/directxsdk/files/Lib/x86;../../../third_party/platformsdk_win7/files/Lib;%(AdditionalLibraryDirectories)</AdditionalLibraryDirectories>
@@ -270,6 +270,7 @@
     <None Include="sessions.html" />
   </ItemGroup>
   <ItemGroup>
+    <ClInclude Include="cefclient\SessionSaveListener.h" />
     <ClInclude Include="cefclient\sqlite3.h" />
     <ClInclude Include="cefclient\sqlite3ext.h" />
     <ClInclude Include="include\cef_download_handler.h" />
@@ -350,6 +351,7 @@
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="cefclient\cefclient_win.cpp" />
+    <ClCompile Include="cefclient\SessionSaveListener.cpp" />
     <ClCompile Include="cefclient\shell.c" />
     <ClCompile Include="cefclient\sqlite3.c" />
     <ClCompile Include="cefclient\string_util.cpp" />
