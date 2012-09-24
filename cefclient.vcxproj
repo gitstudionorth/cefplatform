@@ -270,6 +270,7 @@
     <None Include="sessions.html" />
   </ItemGroup>
   <ItemGroup>
+    <ClInclude Include="cefclient\repository.h" />
     <ClInclude Include="cefclient\SessionSaveListener.h" />
     <ClInclude Include="cefclient\sqlite3.h" />
     <ClInclude Include="cefclient\sqlite3ext.h" />
@@ -351,6 +352,7 @@
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="cefclient\cefclient_win.cpp" />
+    <ClCompile Include="cefclient\repository.cpp" />
     <ClCompile Include="cefclient\SessionSaveListener.cpp" />
     <ClCompile Include="cefclient\shell.c" />
     <ClCompile Include="cefclient\sqlite3.c" />

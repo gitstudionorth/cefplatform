@@ -21,6 +21,7 @@
 #include "cefclient/resource_util.h"
 #include "cefclient/string_util.h"
 #include "sqlite3.h"
+#include "repository.h"
 #include "SessionSaveListener.h"
 
 
@@ -284,24 +285,6 @@ void ClientHandler::OnRenderProcessTerminated(CefRefPtr<CefBrowser> browser,
     frame->LoadURL(startupURL);
 }
 
-std::string sessions;
-static int callback(void *NotUsed, int argc, char **argv, char **azColName){
-    int i;
-    sessions.append("{");
-    for(i=0; i<argc; i++) {        
-        sessions.append("'");
-        sessions.append(azColName[i]);
-        sessions.append("'");
-        sessions.append(": ");
-        sessions.append("'");
-        sessions.append(argv[i]);
-        sessions.append("',");
-    }
-    sessions.append("},");
-
-    return 0;
-}
-
 CefRefPtr<CefResourceHandler> ClientHandler::GetResourceHandler(CefRefPtr<CefBrowser> browser, CefRefPtr<CefFrame> frame, CefRefPtr<CefRequest> request) {
 
     char szWorkingDir[MAX_PATH];  // The current working directory
@@ -330,43 +313,14 @@ CefRefPtr<CefResourceHandler> ClientHandler::GetResourceHandler(CefRefPtr<CefBro
     }
     while(read > 0);
 
-    sqlite3 *db; // sqlite3 db struct
-    char *zErrMsg = 0;
-    char *szSQL;
-    int rc;
-
-    // Open db
-    rc = sqlite3_open("precedex_calc.sqlite", &db);
-
-    if( rc ) {
-        // failed
-        // fprintf(stderr, "Can't open database: %s\n", sqlite3_errmsg(db));
-    } else {
-        // success
-        // fprintf(stderr, "Open database successfully\n");
-    }
-
-    // create myTable
-    // szSQL = "create table myTable (FirstName varchar(30), LastName varchar(30), Age smallint not null)";
-
-    // rc = sqlite3_exec(db, szSQL, callback, 0, &zErrMsg);
-
-    if( rc == SQLITE_OK ) {
-        // insert 1 record into myTable
-        // RunInsertParamSQL(db, "askyb", "com", 10);
-
-        // fetch records
-        szSQL = "select * from sessions";
-        rc = sqlite3_exec(db, szSQL, callback, 0, &zErrMsg);
-    }
-
-    // Close test.db file
-    sqlite3_close(db);
-
     std::string sessiondata = ss.str();
-    std::string placeholder = "'placeholder'";
+    std::string placeholder = "\"placeholder\"";
+
+    std::string sessions = storage::getSessions();
     
-    sessiondata.replace(sessiondata.find(placeholder), placeholder.length(), sessions);
+    size_t found = sessiondata.find(placeholder);
+    if (found != std::string::npos)
+        sessiondata.replace(sessiondata.find(placeholder), placeholder.length(), sessions);
 
     browser->GetMainFrame()->LoadStringW(sessiondata, "http://sessions/");
 
@@ -378,33 +332,6 @@ CefRefPtr<CefResourceHandler> ClientHandler::GetResourceHandler(CefRefPtr<CefBro
         handler = (*it)->GetResourceHandler(this, browser, frame, request);
 
     return handler;
-}
-
-// Insert record
-void RunInsertParamSQL(sqlite3 *db, char *fn, char *ln, int age) {
-  if (!db)
-    return;
-
-  char *zErrMsg = 0;
-  sqlite3_stmt *stmt;
-  const char *pzTest;
-  char *szSQL;
-
-  // Insert data item into myTable
-  szSQL = "insert into myTable (FirstName, LastName, Age) values (?,?,?)";
-
-  int rc = sqlite3_prepare(db, szSQL, strlen(szSQL), &stmt, &pzTest);
-
-  if( rc == SQLITE_OK ) {
-    // bind the value 
-    sqlite3_bind_text(stmt, 1, fn, strlen(fn), 0);
-    sqlite3_bind_text(stmt, 2, ln, strlen(ln), 0);
-    sqlite3_bind_int(stmt, 3, age);
-
-    // commit 
-    sqlite3_step(stmt);
-    sqlite3_finalize(stmt);
-  }
 }
 
 void ClientHandler::OnProtocolExecution(CefRefPtr<CefBrowser> browser,

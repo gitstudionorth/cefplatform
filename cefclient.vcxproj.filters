@@ -298,7 +298,12 @@
     <ClCompile Include="cefclient\sqlite3.c">
       <Filter>cefclient</Filter>
     </ClCompile>
-    <ClCompile Include="cefclient\SessionSaveListener.cpp" />
+    <ClCompile Include="cefclient\SessionSaveListener.cpp">
+      <Filter>cefclient</Filter>
+    </ClCompile>
+    <ClCompile Include="cefclient\repository.cpp">
+      <Filter>cefclient</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="cefclient\sqlite3.h">
@@ -307,6 +312,11 @@
     <ClInclude Include="cefclient\sqlite3ext.h">
       <Filter>cefclient</Filter>
     </ClInclude>
-    <ClInclude Include="cefclient\SessionSaveListener.h" />
+    <ClInclude Include="cefclient\SessionSaveListener.h">
+      <Filter>cefclient</Filter>
+    </ClInclude>
+    <ClInclude Include="cefclient\repository.h">
+      <Filter>cefclient</Filter>
+    </ClInclude>
   </ItemGroup>
 </Project>
