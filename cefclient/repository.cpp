@@ -52,6 +52,7 @@ namespace storage {
         if( rc == SQLITE_OK ) {
             // fetch records
             szSQL = "select * from sessions";
+            sessions.clear();
             rc = sqlite3_exec(db, szSQL, callback, 0, &zErrMsg);
         }
 

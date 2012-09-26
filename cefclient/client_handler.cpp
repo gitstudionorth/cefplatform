@@ -11,7 +11,6 @@
 #include <string>
 #include "include/cef_browser.h"
 #include "include/cef_frame.h"
-#include "include/cef_path_util.h"
 #include "include/cef_process_util.h"
 #include "include/cef_runnable.h"
 #include "include/wrapper/cef_stream_resource_handler.h"
@@ -287,42 +286,7 @@ void ClientHandler::OnRenderProcessTerminated(CefRefPtr<CefBrowser> browser,
 
 CefRefPtr<CefResourceHandler> ClientHandler::GetResourceHandler(CefRefPtr<CefBrowser> browser, CefRefPtr<CefFrame> frame, CefRefPtr<CefRequest> request) {
 
-    char szWorkingDir[MAX_PATH];  // The current working directory
-    // Retrieve the current working directory.
-    if (_getcwd(szWorkingDir, MAX_PATH) == NULL)
-        szWorkingDir[0] = 0;
-
-    std::string path;
-
-    path.append(szWorkingDir);
-    path.append("\\sessions.html");
-
-    CefRefPtr<CefStreamReader> stream = CefStreamReader::CreateForFile(path.c_str());
-    ASSERT(stream.get());  
-
-    // read all of the stream data into a std::string.
-    std::stringstream ss;
-    char buff[100];
-    size_t read;
-    do {
-        read = stream->Read(buff, sizeof(char), 100-1);
-        if(read > 0) {
-            buff[read] = 0;
-            ss << buff;
-        }
-    }
-    while(read > 0);
-
-    std::string sessiondata = ss.str();
-    std::string placeholder = "\"placeholder\"";
-
-    std::string sessions = storage::getSessions();
-    
-    size_t found = sessiondata.find(placeholder);
-    if (found != std::string::npos)
-        sessiondata.replace(sessiondata.find(placeholder), placeholder.length(), sessions);
-
-    browser->GetMainFrame()->LoadStringW(sessiondata, "http://sessions/");
+    binding_test::LoadSessions(browser);
 
     CefRefPtr<CefResourceHandler> handler;
     // Execute delegate callbacks.

@@ -15,7 +15,7 @@ namespace binding_test {
 void CreateProcessMessageDelegates(ClientHandler::ProcessMessageDelegateSet& delegates);
 
 // Run the test.
-void RunTest(CefRefPtr<CefBrowser> browser);
+void LoadSessions(CefRefPtr<CefBrowser> browser);
 
 }  // namespace binding_test
 
