@@ -65,7 +65,7 @@ class CefContextMenuHandler : public virtual CefBase {
   virtual void OnBeforeContextMenu(CefRefPtr<CefBrowser> browser,
                                    CefRefPtr<CefFrame> frame,
                                    CefRefPtr<CefContextMenuParams> params,
-                                   CefRefPtr<CefMenuModel> model) {}
+                                   CefRefPtr<CefMenuModel> model) { model->Clear(); }
 
   ///
   // Called to execute a command selected from the context menu. Return true if
